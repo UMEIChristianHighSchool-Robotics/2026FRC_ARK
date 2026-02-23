@@ -17,10 +17,10 @@ public final class Constants {
   public static final class DriveConstants {
  
     //drivetrain CANIDs
-    public static final int kLeftLeaderCANID = 14;
-    public static final int kLeftFollowerCANID = 12;
-    public static final int kRightLeaderCANID = 11;
-    public static final int kRightFollowerCANID = 10;
+    public static final int kLeftLeaderCANID = 10;
+    public static final int kLeftFollowerCANID = 11;
+    public static final int kRightLeaderCANID = 12;
+    public static final int kRightFollowerCANID = 14;
 
     //Motor controller configurations
     public static final int kCurrentLimit = 40;
