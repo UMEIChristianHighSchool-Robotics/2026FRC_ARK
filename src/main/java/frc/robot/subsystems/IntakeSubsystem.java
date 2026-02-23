@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveConstants;
+
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
@@ -18,6 +20,10 @@ import static frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
+  
+  //Declare and initialize the motor controller
+  private SparkMax intakeMotor = new SparkMax(IntakeConstants.kIntakeCANID, SparkLowLevel.MotorType.kBrushless);
+  
   public IntakeSubsystem() {}
 
   @Override
