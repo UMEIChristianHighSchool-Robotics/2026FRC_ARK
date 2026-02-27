@@ -65,7 +65,7 @@ public class DiffDriveSubsystem extends SubsystemBase {
       .idleMode(IdleMode.kBrake);
     
     rightFollowerConfig
-      .follow(DriveConstants.kRightLeaderCANID,DriveConstants.kRightInverted)
+      .follow(DriveConstants.kRightLeaderCANID,DriveConstants.kLeftInverted)
       .smartCurrentLimit(DriveConstants.kCurrentLimit)
       .openLoopRampRate(DriveConstants.kRampRate)
       .voltageCompensation(DriveConstants.kVoltCompensation)

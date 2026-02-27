@@ -19,8 +19,8 @@ public final class Constants {
     //drivetrain CANIDs
     public static final int kLeftLeaderCANID = 4;
     public static final int kLeftFollowerCANID = 5;
-    public static final int kRightLeaderCANID = 3;
-    public static final int kRightFollowerCANID = 2;
+    public static final int kRightLeaderCANID = 2;
+    public static final int kRightFollowerCANID = 3;
 
     //Motor controller configurations
     public static final int kCurrentLimit = 40;
