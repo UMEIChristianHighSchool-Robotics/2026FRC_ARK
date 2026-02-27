@@ -24,7 +24,7 @@ public final class Constants {
 
     //Motor controller configurations
     public static final int kCurrentLimit = 40;
-    public static final double kRampRate = 0.2;
+    public static final double kRampRate = 0.7;
     public static final double kVoltCompensation = 12.0;
 
     //Motor inversion
@@ -39,7 +39,7 @@ public final class Constants {
     
     //Intake motor controller configurations
     public static final int kCurrentLimit = 40;
-    public static final double kRampRate = 0.2;
+    public static final double kRampRate = 0.7;
     public static final double kVoltCompensation = 12.0;
     public static final double kIntakeSpeed = 0.75;
 
@@ -61,7 +61,7 @@ public final class Constants {
 
     //Speed and deadband
     public static final double kDriveSpeedScale = 0.8;
-    public static final double kDeadband = 0.5;
+    public static final double kDeadband = 0.05;
   }
 
 }
