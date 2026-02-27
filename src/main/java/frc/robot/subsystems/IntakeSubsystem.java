@@ -8,7 +8,6 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.IntakeConstants;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -36,7 +35,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeConfig  
       .inverted(IntakeConstants.kInverted)  
       .smartCurrentLimit(IntakeConstants.kCurrentLimit)
-      .openLoopRampRate(IntakeConstantsConstants.kRampRate)
+      .openLoopRampRate(IntakeConstants.kRampRate)
       .voltageCompensation(IntakeConstants.kVoltCompensation)
       .idleMode(IdleMode.kBrake);
   
@@ -46,5 +45,13 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+   public void runIntake() {
+    intakeMotor.set(IntakeConstants.kIntakeSpeed);
+  }
+
+   public void stop() {
+    intakeMotor.set(IntakeConstants.kIntakeSpeed);
   }
 }

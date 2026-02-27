@@ -6,10 +6,15 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.DiffDriveSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
 import static frc.robot.Constants.OperatorConstants;
 
@@ -17,16 +22,18 @@ public class RobotContainer {
   
   //Subsystems
   public final DiffDriveSubsystem m_driveSubsystem = new DiffDriveSubsystem();
+  public final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   
   //Controllers
   public final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
-  
+ 
   //Commands
   public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_driverController);
-
+ 
   public RobotContainer() {
     // This is the constructor of the robot container
      m_driveSubsystem.setDefaultCommand(m_driveCommand);
+     m_intakeSubsystem.setDefaultCommand(new RunCommand(m_intakeSubsystem::stop, m_intakeSubsystem));
 
     // Configure the trigger bindings
     configureBindings();
@@ -66,6 +73,14 @@ public class RobotContainer {
     // pressed,
     // cancelling on release.
    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+ m_driverController.y().toggleOnTrue(
+    new StartEndCommand(
+        () -> m_intakeSubsystem.runIntake(),
+        () -> m_intakeSubsystem.stop(),
+        m_intakeSubsystem
+    )
+);
+     
   }
 
   /**

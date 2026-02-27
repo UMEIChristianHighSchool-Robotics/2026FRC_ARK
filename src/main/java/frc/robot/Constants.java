@@ -41,6 +41,7 @@ public final class Constants {
     public static final int kCurrentLimit = 40;
     public static final double kRampRate = 0.2;
     public static final double kVoltCompensation = 12.0;
+    public static final double kIntakeSpeed = 0.75;
 
     //Intake Motor inversion
     public static final boolean kInverted = false;
