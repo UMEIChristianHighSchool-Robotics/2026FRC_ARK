@@ -65,6 +65,7 @@ public class DiffDriveSubsystem extends SubsystemBase {
       .idleMode(IdleMode.kBrake);
     
     rightFollowerConfig
+      //had to set the rightFollower to a different inversion than the right leader for the competition robot. Switch back to .kRightInverted for testbot
       .follow(DriveConstants.kRightLeaderCANID,DriveConstants.kLeftInverted)
       .smartCurrentLimit(DriveConstants.kCurrentLimit)
       .openLoopRampRate(DriveConstants.kRampRate)
