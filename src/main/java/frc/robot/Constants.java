@@ -35,7 +35,8 @@ public final class Constants {
   public static final class IntakeConstants {
 
     //intake CANID
-     public static final int kIntakeCANID = 8;
+    public static final int kFeederRollerCANID = 8;
+    public static final int kIntakeLauncherCANID = 9;
     
     //Intake motor controller configurations
     public static final int kCurrentLimit = 40;
@@ -44,7 +45,8 @@ public final class Constants {
     public static final double kIntakeSpeed = 0.75;
 
     //Intake Motor inversion
-    public static final boolean kInverted = false;
+    public static final boolean kFeederInverted = false;
+    public static final boolean kLauncherInverted = true;
 
   }
 
