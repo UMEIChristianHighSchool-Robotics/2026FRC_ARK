@@ -11,10 +11,16 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.Eject;
+import frc.robot.commands.Launch;
+import frc.robot.commands.Intake;
+import frc.robot.commands.SpinUp;
 import frc.robot.subsystems.DiffDriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+
+
 
 import static frc.robot.Constants.OperatorConstants;
 
@@ -24,9 +30,12 @@ public class RobotContainer {
   public final DiffDriveSubsystem m_driveSubsystem = new DiffDriveSubsystem();
   public final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   
-  //Controllers
+  //Driver Controller
   public final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
- 
+
+  //Operator Controller
+  public final CommandXboxController m_operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+
   //Commands
   public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_driverController);
  
@@ -73,14 +82,24 @@ public class RobotContainer {
     // pressed,
     // cancelling on release.
    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
- m_driverController.y().toggleOnTrue(
-    new StartEndCommand(
-        () -> m_intakeSubsystem.runIntake(),
-        () -> m_intakeSubsystem.stop(),
-        m_intakeSubsystem
-    )
-);
-     
+ 
+   // While the left bumper on operator controller is held, intake Fuel
+    m_operatorController.leftBumper().whileTrue(new Intake(IntakeSubsystem));
+    // While the right bumper on the operator controller is held, spin up for 1
+    // second, then launch fuel. When the button is released, stop.
+    m_operatorController.rightBumper().whileTrue(new LaunchSequence(IntakeSubsystem));
+    // While the A button is held on the operator controller, eject fuel back out
+    // the intake
+    m_operatorController.a().whileTrue(new Eject(IntakeSubsystem));
+
+  // Set the default command for the drive subsystem to the command provided by
+    // factory with the values provided by the joystick axes on the driver
+    // controller. The Y axis of the controller is inverted so that pushing the
+    // stick away from you (a negative value) drives the robot forwards (a positive
+    // value)
+    m_driveSubsystem.setDefaultCommand(new Drive(m_driveSubsystem, m_driverController));
+
+    m_intakeSubsystem.setDefaultCommand(m_intakeSubsystem.run(() -> m_intakeSubsystem.stop()));
   }
 
   /**
