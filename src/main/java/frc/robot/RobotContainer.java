@@ -37,17 +37,14 @@ public class RobotContainer {
   public final DiffDriveSubsystem m_driveSubsystem = new DiffDriveSubsystem();
   public final SnowPlowSubsystem m_intakeSubsystem = new SnowPlowSubsystem();
   
-  //Driver Controller
-  public final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
-
-  //Operator Controller
-  public final CommandXboxController m_operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+  //Xbox Controller
+  public final CommandXboxController m_controller = new CommandXboxController(OperatorConstants.kControllerPort);
 
   // The autonomous chooser
   public final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   //Commands
-  public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_driverController);
+  public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_controller);
   public final IntakeCommand m_intakeCommand = new IntakeCommand(m_intakeSubsystem);
   public final EjectCommand m_ejectCommand = new EjectCommand(m_intakeSubsystem);
   public final LaunchSequenceCommand m_launchSequenceCommand = new LaunchSequenceCommand(m_intakeSubsystem);
@@ -91,23 +88,23 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
     // cancelling on release.
-   // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+   // m_controller.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
  
    // While the left bumper on operator controller is held, intake Fuel
-    m_operatorController.leftBumper().whileTrue(new IntakeCommand(m_intakeSubsystem));
+    m_controller.leftBumper().whileTrue(new IntakeCommand(m_intakeSubsystem));
     // While the right bumper on the operator controller is held, spin up for 1
     // second, then launch fuel. When the button is released, stop.
-    m_operatorController.rightBumper().whileTrue(new LaunchSequenceCommand(m_intakeSubsystem));
+    m_controller.rightBumper().whileTrue(new LaunchSequenceCommand(m_intakeSubsystem));
     // While the A button is held on the operator controller, eject fuel back out
     // the intake
-    m_operatorController.a().whileTrue(new EjectCommand(m_intakeSubsystem));
+    m_controller.a().whileTrue(new EjectCommand(m_intakeSubsystem));
 
   // Set the default command for the drive subsystem to the command provided by
     // factory with the values provided by the joystick axes on the driver
     // controller. The Y axis of the controller is inverted so that pushing the
     // stick away from you (a negative value) drives the robot forwards (a positive
     // value)
-    m_driveSubsystem.setDefaultCommand(new DriveCommand(m_driveSubsystem, m_driverController));
+    m_driveSubsystem.setDefaultCommand(new DriveCommand(m_driveSubsystem, m_controller));
 
     m_intakeSubsystem.setDefaultCommand(m_intakeSubsystem.run(() -> m_intakeSubsystem.stop()));
   }
@@ -125,11 +122,11 @@ public class RobotContainer {
   // creates methods which read the joystick values for display on the
   // shuffleboard
   public double getLeftYValue() {
-  return -m_driverController.getLeftY();
+  return -m_controller.getLeftY();
 }
 
 public double getRightYValue() {
-  return -m_driverController.getRightY();
+  return -m_controller.getRightY();
 }
 
 
