@@ -67,7 +67,7 @@ public final class Constants {
 
     //Joystick USB port
     public static final int kDriverControllerPort = 0;
-    public static final int kOperatorControllerPort = 1;
+    public static final int kOperatorControllerPort = 0;
 
     //Joystick buttons
     public static final int kLeftYAxis = 1;

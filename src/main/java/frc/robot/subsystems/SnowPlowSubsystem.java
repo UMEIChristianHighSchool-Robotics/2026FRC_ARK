@@ -11,6 +11,8 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 //import com.revrobotics.spark.SparkLowLevel;
 
@@ -25,11 +27,11 @@ public class SnowPlowSubsystem extends SubsystemBase {
   
   //Declare and initialize the motor controllers
   private SparkMax feederRoller = new SparkMax(SnowPlowConstants.kFeederRollerCANID, MotorType.kBrushless);
-  private SparkMax intakeLauncherRoller = new SparkMax(SnowPlowConstants.kIntakeLauncherCANID, MotorType.kBrushless);
+  private SparkFlex intakeLauncherRoller = new SparkFlex(SnowPlowConstants.kIntakeLauncherCANID, MotorType.kBrushless);
   
   // declare configuration
   private SparkMaxConfig feederRollerConfig = new SparkMaxConfig();
-  private SparkMaxConfig intakeLauncherConfig = new SparkMaxConfig();
+  private SparkFlexConfig intakeLauncherConfig = new SparkFlexConfig();
   
 
   public SnowPlowSubsystem() {
