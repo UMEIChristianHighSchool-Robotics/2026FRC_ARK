@@ -37,7 +37,7 @@ public final class Constants {
 
     //Snow plow mechanism CANIDs
     public static final int kFeederRollerCANID = 8;
-    public static final int kIntakeLauncherCANID = 9;
+    public static final int kIntakeLauncherCANID = 10;
     
     //Snow plow mechanism motor controller configurations
 
