@@ -24,7 +24,7 @@ public final class Constants {
     public static final int kRightFollowerCANID = 3;
 
     //Motor controller configurations
-    public static final int kCurrentLimit = 40;
+    public static final int kCurrentLimit = 60;
     public static final double kRampRate = 0.7;
     public static final double kVoltCompensation = 12.0;
 
@@ -41,8 +41,8 @@ public final class Constants {
     
     //Snow plow mechanism motor controller configurations
 
-    public static final int kFeederCurrentLimit = 40;
-    public static final int kLauncherCurrentLimit = 40;
+    public static final int kFeederCurrentLimit = 60;
+    public static final int kLauncherCurrentLimit = 60;
     public static final double kRampRate = 0.7;
     public static final double kVoltCompensation = 12.0;
     public static final double kIntakeSpeed = 0.75;
