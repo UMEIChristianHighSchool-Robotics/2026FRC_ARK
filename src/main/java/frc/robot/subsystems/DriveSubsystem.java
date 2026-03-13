@@ -19,7 +19,7 @@ import edu.wpi.first.math.MathUtil;
 import static frc.robot.Constants.OperatorConstants;
 import static frc.robot.Constants.DriveConstants;
 
-public class DiffDriveSubsystem extends SubsystemBase {
+public class DriveSubsystem extends SubsystemBase {
 
   //Declare and initialize the motor controllers
   private SparkMax leftLeader = new SparkMax(DriveConstants.kLeftLeaderCANID, MotorType.kBrushless);
@@ -39,7 +39,7 @@ public class DiffDriveSubsystem extends SubsystemBase {
   private SendableChooser<Double> driveScaleChooser = new SendableChooser<>();
 
   
-  public DiffDriveSubsystem() {
+  public DriveSubsystem() {
   
     //Configure motor controllers inside the constructor
         

@@ -9,19 +9,19 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.subsystems.DiffDriveSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 
 import static frc.robot.Constants.OperatorConstants;
 
 public class DriveCommand extends Command {
  
-    private final DiffDriveSubsystem m_drive;
+    private final DriveSubsystem m_drive;
     private final CommandXboxController m_controller;
 
     // declare a driveChooser variable and instantiate by assigning it to a string or enum SendableChooser
     SendableChooser<String> driveChooser = new SendableChooser<String>();
 
-     public DriveCommand(DiffDriveSubsystem drive, CommandXboxController controller) {
+     public DriveCommand(DriveSubsystem drive, CommandXboxController controller) {
         addRequirements(drive);
         m_drive = drive;
         m_controller = controller;

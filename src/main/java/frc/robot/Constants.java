@@ -24,7 +24,7 @@ public final class Constants {
     public static final int kRightFollowerCANID = 3;
 
     //Motor controller configurations
-    public static final int kCurrentLimit = 60;
+    public static final int kCurrentLimit = 40;
     public static final double kRampRate = 0.7;
     public static final double kVoltCompensation = 12.0;
 
@@ -33,33 +33,79 @@ public final class Constants {
     public static final boolean kRightInverted = true;
   }
   
-  public static final class SnowPlowConstants {
+  public static final class IntakeConstants {
 
-    //Snow plow mechanism CANIDs
-    public static final int kFeederRollerCANID = 8;
-    public static final int kIntakeLauncherCANID = 10;
+    //Intake mechanism CANIDs
+    public static final int kIntakeRollerCANID = 10;
+    public static final int kIntakePivotCANID = 11;
+
+    //Intake pivot radians
+    public static final double kUpRadians = 0.0;
+    public static final double kTravelRadians = 0.6;
+    public static final double kIntakeRadians = 1.3;
+    public static final double kAbsoluteZeroOffset = 0.02;//to find this value put intake in the UP position physically. Print encoder value to dashboard. That value becomes your offset.
+    //Feedforward
+    public static final double kSFeedForward = 0.0; //kS (start with 0)
+    public static final double kGFeedForward = 0.25; //kG (typically between 0.15 and 0.35)
+    public static final double kVFeedForward = 0.0; //kV
     
-    //Snow plow mechanism motor controller configurations
+    public static final double kGearRatio = 12.0; //if gear ratio is 12:1 accounting for gearing between motor and pivot
+    
+    //Intake roller motor controller configurations
 
-    public static final int kFeederCurrentLimit = 60;
-    public static final int kLauncherCurrentLimit = 60;
+    public static final int kFeederCurrentLimit = 40;
     public static final double kRampRate = 0.7;
     public static final double kVoltCompensation = 12.0;
     public static final double kIntakeSpeed = 0.75;
 
-    // Voltage values for various snow plow operations. These values may need to be tuned
+    //Intake pivot motor controller configurations 
+    public static final double kP = 0.05;
+    public static final double kI = 0;// leave 0
+    public static final double kD = 0;// leave 0
+    public static final double kFF = 0.0022;//recommend 0.0021-0.0023 starting
+   
+   
+    public static final double kForwardSoftLimit = -0.09;//move intake to lowest safe position manually, print encoder radians to dashboard, subtract 0.1 rad for safety
+    public static final double kReverseSoftLimit = 1.48;//move intake to up position manually, print encoder radians to dashboard, subtract 0.1 rad for safety
+    public static final boolean kForwardSoftLimitEnabled = true;//test and confirm limits first
+    public static final boolean kReverseSoftLimitEnabled = true;//test and confirm limits first
+    public static final int kPivotCurrentLimit = 40;
+
+    // Voltage values for various intake operations. These values may need to be tuned
     // based on exact robot construction.
     // See the Software Guide for tuning information
     public static final double kIntakingFeederVoltage = -12;
     public static final double kIntakingIntakeVoltage = 10;
-    public static final double kLaunchingFeederVoltage = 9;
-    public static final double kLaunchingLauncherVoltage = 10.6;
     public static final double kSpinUpFeederVoltage = -6;
     public static final double kSpinUpSeconds = 1;
 
-    //Snow plow mechanism Motor inversion
+    //Intake mechanism Motor inversion
     public static final boolean kFeederInverted = false;
-    public static final boolean kLauncherInverted = true;
+    
+  }
+
+  public static final class ShooterConstants {
+
+    //Shooter mechanism CANIDs
+    public static final int kShooterRightCANID = 12;
+    public static final int kShooterLeftCANID = 13;
+
+    //Shooter mechanism motor controller configurations
+    public static final int kCurrentLimit = 40;
+    public static final double kRampRate = 0.7;
+    public static final double kVoltCompensation = 12.0;
+
+    public static final double kP = 0.002;//recommend 0.015-0.003 starting
+    public static final double kI = 0;//leave 0
+    public static final double kD = 0;// leave 0
+    public static final double kFF = 0.0022;//recommend 0.0021-0.0023 starting
+
+    public static final double kShooterTolerance = 100; //RPM
+    public static final double kShooterSpinUp = 4000; //RPM
+
+    //Shooter motor inversion
+    public static final boolean kLeftInverted = false;
+    public static final boolean kRightInverted = true;
 
   }
 

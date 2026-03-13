@@ -5,42 +5,25 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.DriveSubsystem;
-import static frc.robot.Constants.DriveConstants;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AutoDriveCommand extends Command {
-  /** Creates a new Drive. */
-  DriveSubsystem m_drive;
-  double xSpeed, zRotation;
-
-  public AutoDriveCommand(DriveSubsystem drive, double xSpeed, double zRotation) {
+public class ShooterIdleCommand extends Command {
+  /** Creates a new ShooterIdleCommand. */
+  public ShooterIdleCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(drive);
-    m_drive = drive;
-    this.xSpeed = xSpeed;
-    this.zRotation = zRotation;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
-  // Setting the values here instead of in initialize feeds the watchdog on the
-  // arcade drive object
   @Override
-  public void execute() {
-    m_drive.setArcadePower(xSpeed, zRotation);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_drive.setArcadePower(0.0, 0.0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
