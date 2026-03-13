@@ -24,7 +24,7 @@ public final class Constants {
     public static final int kRightFollowerCANID = 3;
 
     //Motor controller configurations
-    public static final int kCurrentLimit = 40;
+    public static final int kCurrentLimit = 60;
     public static final double kRampRate = 0.7;
     public static final double kVoltCompensation = 12.0;
 
@@ -37,7 +37,7 @@ public final class Constants {
 
     //Intake mechanism CANIDs
     public static final int kIntakeRollerCANID = 10;
-    public static final int kIntakePivotCANID = 11;
+    public static final int kIntakePivotCANID = 6;
 
     //Intake pivot radians
     public static final double kUpRadians = 0.0;
@@ -53,8 +53,8 @@ public final class Constants {
     
     //Intake roller motor controller configurations
 
-    public static final int kFeederCurrentLimit = 40;
-    public static final double kRampRate = 0.7;
+    public static final int kFeederCurrentLimit = 60;
+    public static final double kRampRate = 0.3;
     public static final double kVoltCompensation = 12.0;
     public static final double kIntakeSpeed = 0.75;
 
@@ -74,9 +74,9 @@ public final class Constants {
     // Voltage values for various intake operations. These values may need to be tuned
     // based on exact robot construction.
     // See the Software Guide for tuning information
-    public static final double kIntakingFeederVoltage = -12;
-    public static final double kIntakingIntakeVoltage = 10;
-    public static final double kSpinUpFeederVoltage = -6;
+    public static final double kIntakingFeederVoltage = -8;
+    public static final double kIntakingIntakeVoltage = 8;
+    public static final double kSpinUpFeederVoltage = -4;
     public static final double kSpinUpSeconds = 1;
 
     //Intake mechanism Motor inversion
