@@ -37,39 +37,45 @@ public final class Constants {
 
     //Intake mechanism CANIDs
     public static final int kIntakeRollerCANID = 10;
-    public static final int kIntakePivotCANID = 6;
+    public static final int kIntakeDeployCANID = 6;
 
-    //Intake pivot radians
+    //Intake deploy roboRIO DIO port
+    public static final int kDeployEncoderDIOPort = 0;
+
+    //Intake roller motor controller configurations
+    public static final int kFeederCurrentLimit = 60;
+    public static final double kFeederRampRate = 0.3;
+    public static final double kFeederVoltCompensation = 12.0;
+    public static final double kIntakeFeederSpeed = 0.75;
+
+    //Intake deploy motor controller configurations 
+    public static final int kDeployCurrentLimit = 40;
+    public static final double kDeployRampRate = 0.3;
+    public static final double kDeployVoltCompensation = 12.0;
+    public static final double kIntakeDeploySpeed = 0.5;
+
+    //Intake deploy position radians
     public static final double kUpRadians = 0.0;
     public static final double kTravelRadians = 0.6;
     public static final double kIntakeRadians = 1.3;
-    public static final double kAbsoluteZeroOffset = 0.02;//to find this value put intake in the UP position physically. Print encoder value to dashboard. That value becomes your offset.
+    public static final double kZeroOffset = 0.02;//to find this value put intake in the UP position physically. Print encoder value to dashboard. That value becomes your offset.
+    
     //Feedforward
-    public static final double kSFeedForward = 0.0; //kS (start with 0)
-    public static final double kGFeedForward = 0.25; //kG (typically between 0.15 and 0.35)
-    public static final double kVFeedForward = 0.0; //kV
-    
-    public static final double kGearRatio = 12.0; //if gear ratio is 12:1 accounting for gearing between motor and pivot
-    
-    //Intake roller motor controller configurations
-
-    public static final int kFeederCurrentLimit = 60;
-    public static final double kRampRate = 0.3;
-    public static final double kVoltCompensation = 12.0;
-    public static final double kIntakeSpeed = 0.75;
-
-    //Intake pivot motor controller configurations 
-    public static final double kP = 0.05;
+    public static final double kSFeedForward = 0.0; // kS (start with 0)
+    public static final double kGFeedForward = 0.4; // guess to start
+    public static final double kVFeedForward = 0.0; // usually stays at 0
+    public static final double kGearRatio = 12.0; // if gear ratio is 12:1 accounting for gearing between motor and deploy mechanism
+   
+    //Intake deploy encoder configurations
+    public static final double kP = 1.0;
     public static final double kI = 0;// leave 0
     public static final double kD = 0;// leave 0
-    public static final double kFF = 0.0022;//recommend 0.0021-0.0023 starting
-   
-   
-    public static final double kForwardSoftLimit = -0.09;//move intake to lowest safe position manually, print encoder radians to dashboard, subtract 0.1 rad for safety
-    public static final double kReverseSoftLimit = 1.48;//move intake to up position manually, print encoder radians to dashboard, subtract 0.1 rad for safety
+    public static final double kDeployTolerance = 0.05;
+
+    public static final double kForwardSoftLimit = 1.52;//radians move intake to lowest safe position manually, print encoder radians to dashboard, subtract 0.1 rad for safety
+    public static final double kReverseSoftLimit = 0.05;//move intake to up position manually, print encoder radians to dashboard, subtract 0.1 rad for safety
     public static final boolean kForwardSoftLimitEnabled = true;//test and confirm limits first
     public static final boolean kReverseSoftLimitEnabled = true;//test and confirm limits first
-    public static final int kPivotCurrentLimit = 40;
 
     // Voltage values for various intake operations. These values may need to be tuned
     // based on exact robot construction.
@@ -81,7 +87,7 @@ public final class Constants {
 
     //Intake mechanism Motor inversion
     public static final boolean kFeederInverted = false;
-    
+    public static final boolean kDeployInverted = false;
   }
 
   public static final class ShooterConstants {
