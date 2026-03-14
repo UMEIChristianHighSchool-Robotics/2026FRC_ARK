@@ -4,9 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.FeedbackSensor;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -25,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
-  //------ create Enum to set up states with positions-------/
+  //------ create Enum to setup states with positions-------/
   
   public enum IntakeState{
     UP(IntakeConstants.kUpRadians),
@@ -38,9 +35,6 @@ public class IntakeSubsystem extends SubsystemBase {
       this.radians = radians;
     }
   }
-
-  //-------Declare the state it thinks it is in; Drivers have to put the mechanism in the up position-------/
-  private IntakeState currentState = IntakeState.UP; 
 
   //-------Declare and initialize the motor controllers-----------/
   
@@ -65,6 +59,8 @@ public class IntakeSubsystem extends SubsystemBase {
     return intakeDeployEncoder.get();
   }
   
+  private IntakeState currentState;
+
   //create feedforward object
   private final ArmFeedforward feedforward =
     new ArmFeedforward(
@@ -108,10 +104,54 @@ public class IntakeSubsystem extends SubsystemBase {
 
     deployPID.setTolerance(IntakeConstants.kDeployTolerance);
 
-    SmartDashboard.putNumber("Intaking feeder roller value", IntakeConstants.kIntakingFeederVoltage);
-    SmartDashboard.putNumber("Intaking intake roller value", IntakeConstants.kIntakingIntakeVoltage);
-    SmartDashboard.putNumber("Spin-up feeder roller value", IntakeConstants.kSpinUpFeederVoltage);
+    //ensures software state matches reallife on boot
+    double angle = getAngleRadians();
+
+    if (Math.abs(angle - IntakeState.UP.radians) < IntakeConstants.kDeployTolerance) {
+        currentState = IntakeState.UP;
+    } 
+    else if (Math.abs(angle - IntakeState.TRAVEL.radians) < IntakeConstants.kDeployTolerance) {
+        currentState = IntakeState.TRAVEL;
+    } 
+    else if (Math.abs(angle - IntakeState.INTAKE.radians) < IntakeConstants.kDeployTolerance) {
+    currentState = IntakeState.INTAKE;
+    }
+    else {
+    // If it's somewhere unexpected, choose the safest position
+    currentState = IntakeState.UP;
+    }
+    
+    //--------Constants that do not change are published once at startup------------------/
+    // Intake voltages (tunable at event)
+    SmartDashboard.putNumber("Intake Feeder Voltage", IntakeConstants.kIntakingFeederVoltage);
+    SmartDashboard.putNumber("Intake Roller Voltage", IntakeConstants.kIntakingIntakeVoltage);
+    SmartDashboard.putNumber("Spin-up Feeder Voltage", IntakeConstants.kSpinUpFeederVoltage);
+
+    // PID / Feedforward (for tuning)
+    SmartDashboard.putNumber("Deploy kP", IntakeConstants.kP);
+    SmartDashboard.putNumber("Deploy kI", IntakeConstants.kI);
+    SmartDashboard.putNumber("Deploy kD", IntakeConstants.kD);
+    SmartDashboard.putNumber("Deploy kG", IntakeConstants.kGFeedForward);
+
+    // Soft limits
+    SmartDashboard.putNumber("Forward Soft Limit", IntakeConstants.kForwardSoftLimit);
+    SmartDashboard.putNumber("Reverse Soft Limit", IntakeConstants.kReverseSoftLimit);
+   
   }
+
+  //method to check what state deploy system is in
+  public boolean isNearState(IntakeState state) {
+    return Math.abs(getAngleRadians() - state.radians) 
+        < IntakeConstants.kDeployTolerance;
+  }
+  
+  //method to ensure intake deploy system is in the UP position at startup
+  public void ensureUpOnEnable() {
+    if (!isNearState(IntakeState.UP)) {
+      setState(IntakeState.UP);
+    }
+  }
+
 
   //method to change deploy states
   
@@ -140,35 +180,32 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     
-    //read current angle from DIO encoder
-    double currentAngle = intakeDeployEncoder.get();
-    
-    // PID calculates correction voltage to reach target
-    double PIDOutput = deployPID.calculate(currentAngle,currentState.radians);
-   
-    // Feedforward for gravity compensation
-    double ff = feedforward.calculate(currentState.radians,0);
-    
-    // Combine PID and feedforward
-    double outputVolts = PIDOutput + ff;
+    double currentAngle = intakeDeployEncoder.get(); //reads current angle from encoder
+    double targetAngle = currentState.radians;
+    double pidOutput = deployPID.calculate(currentAngle, targetAngle); //calculates correction voltage to reach target
+    double ff = feedforward.calculate(targetAngle, 0);//feedforward for gravity compensation
+    double outputVolts = MathUtil.clamp(pidOutput + ff, -12, 12);
+        
+    // Only apply voltage when robot is enabled
+    if (DriverStation.isEnabled()) {
+        intakeDeployMotor.setVoltage(outputVolts);
+    }
     
     //apply software soft limits
     if ((currentAngle >= IntakeConstants.kForwardSoftLimit && outputVolts > 0) ||
       (currentAngle <= IntakeConstants.kReverseSoftLimit && outputVolts < 0)) {
         outputVolts = 0;
     }
+        
     
-    // Clamp to motor voltage range
-     outputVolts = MathUtil.clamp(outputVolts, -12, 12);
-
-    // Only apply voltage when robot is enabled
-    if (DriverStation.isEnabled()) {
-        intakeDeployMotor.setVoltage(outputVolts);
-    }
-    
-    // Optional: SmartDashboard telemetry
+    //--------SmartDashboard telemetry updated every 20ms----------------/
     SmartDashboard.putNumber("Deploy Angle (rad)", currentAngle);
     SmartDashboard.putNumber("Deploy Angle (deg)", Math.toDegrees(currentAngle));
+    SmartDashboard.putNumber("Deploy Target (rad)", currentState.radians);
+    SmartDashboard.putNumber("Deploy Error (rad)", currentState.radians - currentAngle);
     SmartDashboard.putString("Intake State", currentState.toString());
+    SmartDashboard.putBoolean("At Target?", isAtTarget());
+    SmartDashboard.putNumber("Raw Encoder Value", intakeDeployEncoder.get());
+
   }
 }

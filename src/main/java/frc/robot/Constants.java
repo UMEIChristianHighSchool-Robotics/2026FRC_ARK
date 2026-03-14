@@ -73,7 +73,7 @@ public final class Constants {
     public static final double kDeployTolerance = 0.05;
 
     public static final double kForwardSoftLimit = 1.52;//radians move intake to lowest safe position manually, print encoder radians to dashboard, subtract 0.1 rad for safety
-    public static final double kReverseSoftLimit = 0.05;//move intake to up position manually, print encoder radians to dashboard, subtract 0.1 rad for safety
+    public static final double kReverseSoftLimit = -0.1;//move intake to up position manually, print encoder radians to dashboard, subtract 0.1 rad for safety
     public static final boolean kForwardSoftLimitEnabled = true;//test and confirm limits first
     public static final boolean kReverseSoftLimitEnabled = true;//test and confirm limits first
 

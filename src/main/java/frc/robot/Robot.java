@@ -58,7 +58,9 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
+    //makes sure the intake deploy system is up to begin
+    m_robotContainer.m_intakeSubsystem.ensureUpOnEnable();
+    
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
@@ -78,6 +80,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    //makes sure the deploy system is UP position to begin
+    m_robotContainer.m_intakeSubsystem.ensureUpOnEnable();
+
   }
 
   /** This function is called periodically during operator control. */
