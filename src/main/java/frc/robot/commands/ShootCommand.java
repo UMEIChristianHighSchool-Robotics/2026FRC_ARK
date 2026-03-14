@@ -31,7 +31,7 @@ public class ShootCommand extends SequentialCommandGroup {
 
       // Feed for 0.5 seconds
       new RunCommand(
-          () -> m_intakeSubsystem.runRollerVoltage(IntakeConstants.kIntakingIntakeVoltage),
+          () -> m_intakeSubsystem.runRoller(IntakeConstants.kRollerVoltage),
           m_intakeSubsystem
       ).withTimeout(0.5),
 

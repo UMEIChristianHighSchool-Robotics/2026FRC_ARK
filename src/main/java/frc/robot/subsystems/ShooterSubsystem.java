@@ -90,10 +90,6 @@ public class ShooterSubsystem extends SubsystemBase {
     leftMotor.configure(leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   
     // Initialize dashboard values
-    SmartDashboard.setDefaultNumber("Target Position", 0);
-    SmartDashboard.setDefaultNumber("Target Velocity", 0);
-    SmartDashboard.setDefaultBoolean("Control Mode", false);
-    SmartDashboard.setDefaultBoolean("Reset Encoder", false);
     SmartDashboard.putNumber("Shooter Target RPM", targetRPM);
     SmartDashboard.putNumber("Shooter Actual RPM", rightEncoder.getVelocity());
   
