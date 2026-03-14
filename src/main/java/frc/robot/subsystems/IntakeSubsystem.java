@@ -122,10 +122,11 @@ public class IntakeSubsystem extends SubsystemBase {
     }
     
     //--------Constants that do not change are published once at startup------------------/
-    // Intake voltages (tunable at event)
+    // Intake voltages & speeds (tunable at event)
     SmartDashboard.putNumber("Intake Feeder Voltage", IntakeConstants.kIntakingFeederVoltage);
     SmartDashboard.putNumber("Intake Roller Voltage", IntakeConstants.kIntakingIntakeVoltage);
     SmartDashboard.putNumber("Spin-up Feeder Voltage", IntakeConstants.kSpinUpFeederVoltage);
+    SmartDashboard.putNumber("Intake Roller Speed", IntakeConstants.kFeederSpeed);
 
     // PID / Feedforward (for tuning)
     SmartDashboard.putNumber("Deploy kP", IntakeConstants.kP);
@@ -139,6 +140,25 @@ public class IntakeSubsystem extends SubsystemBase {
    
   }
 
+  //---------------Intake Roller Methods----------------------//
+
+  //Run the intake roller using a speed percent (-1.0 to 1.0)
+  public void runRollerPercent(double percent) {
+      percent = MathUtil.clamp(percent, -1.0, 1.0);
+      intakeRoller.setVoltage(percent * 12.0); // scale to voltage
+}
+  //Run the intake roller using a direct voltage
+  public void runRollerVoltage(double volts) {
+      intakeRoller.setVoltage(MathUtil.clamp(volts, -12.0, 12.0));
+  }
+
+  //Stop the intake roller
+  public void stopRoller() {
+      intakeRoller.stopMotor();
+  }
+
+  //---------------Intake Deploy Methods----------------------//
+  
   //method to check what state deploy system is in
   public boolean isNearState(IntakeState state) {
     return Math.abs(getAngleRadians() - state.radians) 
@@ -152,9 +172,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
   }
 
-
   //method to change deploy states
-  
   public boolean isAtTarget() {
     return Math.abs(
         intakeDeployEncoder.get() - currentState.radians
@@ -168,15 +186,7 @@ public class IntakeSubsystem extends SubsystemBase {
     currentState = newState;
   }
 
-  // A method to control the intake roller
-  public void runRoller(double volts) {
-    intakeRoller.setVoltage(volts);
-  }
-
-  public void stopRoller() {
-  intakeRoller.stopMotor();
-  }
-
+  
   @Override
   public void periodic() {
     

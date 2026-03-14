@@ -46,13 +46,13 @@ public final class Constants {
     public static final int kFeederCurrentLimit = 60;
     public static final double kFeederRampRate = 0.3;
     public static final double kFeederVoltCompensation = 12.0;
-    public static final double kIntakeFeederSpeed = 0.75;
+    public static final double kFeederSpeed = 0.75; //speed percent (-1.0 to 1.0)
 
     //Intake deploy motor controller configurations 
     public static final int kDeployCurrentLimit = 40;
     public static final double kDeployRampRate = 0.3;
     public static final double kDeployVoltCompensation = 12.0;
-    public static final double kIntakeDeploySpeed = 0.5;
+    public static final double kIntakeDeploySpeed = 0.5; //speed percent (-1.0 to 1.0)
 
     //Intake deploy position radians
     public static final double kUpRadians = 0.0;

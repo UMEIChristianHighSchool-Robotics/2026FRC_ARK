@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -30,7 +31,7 @@ public class ShootCommand extends SequentialCommandGroup {
 
       // Feed for 0.5 seconds
       new RunCommand(
-          () -> m_intakeSubsystem.runRoller(6),
+          () -> m_intakeSubsystem.runRollerVoltage(IntakeConstants.kIntakingIntakeVoltage),
           m_intakeSubsystem
       ).withTimeout(0.5),
 

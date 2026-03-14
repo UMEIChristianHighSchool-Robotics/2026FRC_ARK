@@ -16,7 +16,7 @@ public class ReverseIntakeRollerCommand extends Command {
 
   @Override
   public void execute() {
-    intake.runRoller(-IntakeConstants.kIntakingIntakeVoltage);
+    intake.runRollerPercent(-IntakeConstants.kFeederSpeed);
   }
 
   @Override
