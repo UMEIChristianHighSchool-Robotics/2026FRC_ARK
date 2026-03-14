@@ -82,10 +82,10 @@ public class IntakeSubsystem extends SubsystemBase {
     //Configure motor controllers inside the constructor
     //---------Configure intake roller---------
     intakeRollerConfig  
-      .inverted(IntakeConstants.kFeederInverted)  
-      .smartCurrentLimit(IntakeConstants.kFeederCurrentLimit)
-      .openLoopRampRate(IntakeConstants.kFeederRampRate)
-      .voltageCompensation(IntakeConstants.kFeederVoltCompensation)
+      .inverted(IntakeConstants.kRollerInverted)  
+      .smartCurrentLimit(IntakeConstants.kRollerCurrentLimit)
+      .openLoopRampRate(IntakeConstants.kRollerRampRate)
+      .voltageCompensation(IntakeConstants.kRollerVoltCompensation)
       .idleMode(IdleMode.kCoast);
   
     //apply configuration to the motor  
@@ -123,10 +123,8 @@ public class IntakeSubsystem extends SubsystemBase {
     
     //--------Constants that do not change are published once at startup------------------/
     // Intake voltages & speeds (tunable at event)
-    SmartDashboard.putNumber("Intake Feeder Voltage", IntakeConstants.kIntakingFeederVoltage);
-    SmartDashboard.putNumber("Intake Roller Voltage", IntakeConstants.kIntakingIntakeVoltage);
-    SmartDashboard.putNumber("Spin-up Feeder Voltage", IntakeConstants.kSpinUpFeederVoltage);
-    SmartDashboard.putNumber("Intake Roller Speed", IntakeConstants.kFeederSpeed);
+    SmartDashboard.putNumber("Intake Roller Voltage", IntakeConstants.kRollerVoltage);
+    SmartDashboard.putNumber("Intake Deploy/Pivot Voltage", IntakeConstants.kDeployVoltage);
 
     // PID / Feedforward (for tuning)
     SmartDashboard.putNumber("Deploy kP", IntakeConstants.kP);
@@ -142,17 +140,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   //---------------Intake Roller Methods----------------------//
 
-  //Run the intake roller using a speed percent (-1.0 to 1.0)
-  public void runRollerPercent(double percent) {
-      percent = MathUtil.clamp(percent, -1.0, 1.0);
-      intakeRoller.setVoltage(percent * 12.0); // scale to voltage
-}
-  //Run the intake roller using a direct voltage
-  public void runRollerVoltage(double volts) {
+  public void runRoller(double volts) {
       intakeRoller.setVoltage(MathUtil.clamp(volts, -12.0, 12.0));
   }
 
-  //Stop the intake roller
   public void stopRoller() {
       intakeRoller.stopMotor();
   }
@@ -207,7 +198,6 @@ public class IntakeSubsystem extends SubsystemBase {
         outputVolts = 0;
     }
         
-    
     //--------SmartDashboard telemetry updated every 20ms----------------/
     SmartDashboard.putNumber("Deploy Angle (rad)", currentAngle);
     SmartDashboard.putNumber("Deploy Angle (deg)", Math.toDegrees(currentAngle));
