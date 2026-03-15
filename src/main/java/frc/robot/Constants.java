@@ -22,9 +22,34 @@ public final class Constants {
 
       //Motor controller configurations
       public static final int kCurrentLimit = 60;
-      public static final double kRampRate = 0.7;
+      public static final double kRampRate = 0.7; //smooths joystick control
       public static final double kVoltCompensation = 12.0;
 
+      //Approximate: meters per rotation for autonomous drive forward  
+      public static final double kWheelDiameterMeters = 0.1524; // 6 inches
+      public static final double kGearRatio = 8.45;             //KitBot reduction
+      public static final double kMetersPerRotation =
+        (Math.PI * kWheelDiameterMeters) / kGearRatio;          // ~0.0567 m
+
+      // Approximate: turn circumference for turn
+      public static final double kTrackWidthMeters = 0.673; // distance between wheels estimated from kitbot docs
+      public static final double kTurnCircumference =
+        (Math.PI * kTrackWidthMeters); // full 360° rotation
+      
+      //PID for autonomous drive forward meters
+      public static final double kDistanceP=1.0;
+      public static final double kDistanceI=0;
+      public static final double kDistanceD=0;
+      public static final double kDistanceTolerance=0.01;
+      public static final double kDistanceSlewRateLimit=2.0; //controls acceleration to target
+      
+      //PID for autonomous turn to angle
+      public static final double kTurnP=1.0;
+      public static final double kTurnI=0;
+      public static final double kTurnD=0;
+      public static final double kTurnTolerance=2.0; //degrees
+      public static final double kTurnSlewRateLimit = 3.0;//max output change per second
+      
   }
   
   public static final class IntakeConstants {
@@ -115,13 +140,15 @@ public final class Constants {
     public static final double kD = 0;// leave 0
     public static final double kFF = 0.0022;//recommend 0.0021-0.0023 starting
 
-    public static final double kShooterTolerance = 100; //RPM
-    public static final double kShooterSpinUp = 4000; //RPM
+    public static final double kSpeedTolerance = 125; //RPM
+    public static final double kTargetSpeed = 4000; //RPM
 
     //Shooter motor inversion
     public static final boolean kLeftInverted = false;
     public static final boolean kRightInverted = true;
 
+    //Shoot Command
+    public static final double kTimeout = 0.6; //shooter feed timout (seconds)
   }
 
   public static final class OperatorConstants {

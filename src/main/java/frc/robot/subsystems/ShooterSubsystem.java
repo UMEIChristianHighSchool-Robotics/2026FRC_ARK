@@ -105,14 +105,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
   //Add an at speed method for autos and consistency; command can wait
  public boolean atSpeed() {
-  double tolerance = ShooterConstants.kShooterTolerance;
+  double tolerance = ShooterConstants.kSpeedTolerance;
 
   boolean rightAtSpeed =
-      Math.abs(rightEncoder.getVelocity() - Math.abs(targetRPM)) < tolerance;
+    Math.abs(rightEncoder.getVelocity() - targetRPM) < tolerance;
 
-  boolean leftAtSpeed =
-      Math.abs(leftEncoder.getVelocity() - Math.abs(targetRPM)) < tolerance;
-
+   boolean leftAtSpeed =
+    Math.abs(leftEncoder.getVelocity() - targetRPM) < tolerance;
+  
   return rightAtSpeed && leftAtSpeed;
 }
 
@@ -124,10 +124,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    rightClosedLoopControl.setSetpoint(targetRPM, ControlType.kVelocity);
-leftClosedLoopControl.setSetpoint(targetRPM, ControlType.kVelocity);
-
+    
     SmartDashboard.putNumber("Shooter RPM Right", rightEncoder.getVelocity());
     SmartDashboard.putNumber("Shooter RPM Left", leftEncoder.getVelocity());
   }

@@ -9,37 +9,27 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-//import edu.wpi.first.wpilibj2.command.RunCommand;
-//import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-//import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.AutoDriveCommand;
+import frc.robot.commands.DeployAndIntakeCommand;
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.ShootCommand;
-import frc.robot.commands.SpinUpShooterCommand;
-import frc.robot.commands.RunIntakeRollerCommand;
+import frc.robot.commands.HoldShootCommand;
 import frc.robot.commands.IntakeDownCommand;
 import frc.robot.commands.IntakeTravelCommand;
 import frc.robot.commands.IntakeUpCommand;
 import frc.robot.commands.ReverseIntakeRollerCommand;
+import frc.robot.commands.RunIntakeRollerCommand;
+import frc.robot.commands.ShooterIdleCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakeState;
-import frc.robot.commands.DeployAndIntakeCommand;
-import frc.robot.commands.ShooterIdleCommand;
-import frc.robot.commands.StopShooterCommand;
-
-import static frc.robot.Constants.OperatorConstants;
 
 public class RobotContainer {
-  
- /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
 
   //Subsystems
   public final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
@@ -56,25 +46,30 @@ public class RobotContainer {
   public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_controller);
   public final RunIntakeRollerCommand m_runIntakeRollerCommand = new RunIntakeRollerCommand(m_intakeSubsystem);
   public final ReverseIntakeRollerCommand m_reverseIntakeRollerCommand = new ReverseIntakeRollerCommand(m_intakeSubsystem);
+  public final AutoDriveCommand m_autoDriveCommand = new AutoDriveCommand(m_driveSubsystem, OperatorConstants.kxSpeed, OperatorConstants.kzRotation);
   public final IntakeDownCommand m_intakeDownCommand = new IntakeDownCommand(m_intakeSubsystem);
   public final DeployAndIntakeCommand m_deployAndIntakeCommand = new DeployAndIntakeCommand(m_intakeSubsystem);
   public final IntakeUpCommand m_intakeUpCommand = new IntakeUpCommand(m_intakeSubsystem);
   public final IntakeTravelCommand m_intakeTravelCommand = new IntakeTravelCommand(m_intakeSubsystem);
-  public final ShootCommand m_shootCommand = new ShootCommand(m_shooterSubsystem, m_intakeSubsystem);
-  public final ShooterIdleCommand m_shooterIdleCommand = new ShooterIdleCommand();public final SpinUpShooterCommand m_spinUpShooterCommand = new SpinUpShooterCommand(m_shooterSubsystem, ShooterConstants.kShooterSpinUp);
-  public final StopShooterCommand m_stopShooterCommand = new StopShooterCommand(m_shooterSubsystem);
-  public final AutoDriveCommand m_autoDriveCommand = new AutoDriveCommand(m_driveSubsystem, OperatorConstants.kxSpeed, OperatorConstants.kzRotation);
+  public final HoldShootCommand m_shootCommand = new HoldShootCommand(m_shooterSubsystem, m_intakeSubsystem);
+  public final ShooterIdleCommand m_shooterIdleCommand = new ShooterIdleCommand(m_shooterSubsystem);
   
   public RobotContainer() {
-    // This is the constructor of the robot container
+    
+    // Set default subsystem commands in the constructor
     m_driveSubsystem.setDefaultCommand(m_driveCommand);
     m_intakeSubsystem.setDefaultCommand(new RunCommand(m_intakeSubsystem::stopRoller, m_intakeSubsystem));
-  
+    m_shooterSubsystem.setDefaultCommand(
+        new ShooterIdleCommand(m_shooterSubsystem)
+      );
+
+    // Set default state when the robot initializes
+    m_intakeSubsystem.setState(IntakeState.TRAVEL);
+
     // Configure the trigger bindings
     configureBindings();
  
-    //when the robot initializes
-    m_intakeSubsystem.setState(IntakeState.TRAVEL);
+   
     
   // Shuffleboard display for monitoring and Troubleshooting
 
@@ -95,38 +90,24 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    //new Trigger(m_exampleSubsystem::exampleCondition)
-    //    .onTrue(new ExampleCommand(m_exampleSubsystem));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is
-    // pressed,
-    // cancelling on release.
-    // m_controller.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
- 
-  
-  
     // Press the a button to lower the intake to the down position
     m_controller.a().onTrue(new IntakeDownCommand(m_intakeSubsystem));
     //Press the b button to lift the intake to the up position
     m_controller.b().onTrue(new IntakeUpCommand(m_intakeSubsystem));
     
-    //Hold the left trigger to turn on the intake roller and intake balls 
+    //Left trigger: intake roller
     m_controller.leftTrigger().whileTrue(new RunIntakeRollerCommand(m_intakeSubsystem));
-    //Hold the left bumper to reverse the direction of the intake roller to clear jams 
+    
+    //Left bumber: reverse intake roller to clear jams 
     m_controller.leftBumper().whileTrue(new ReverseIntakeRollerCommand(m_intakeSubsystem));
   
-    //Hold the right bumper to spin up the launcher roller
-    m_controller.rightBumper()
-    .whileTrue(new SpinUpShooterCommand(m_shooterSubsystem, ShooterConstants.kShooterSpinUp));
+    //Right trigger: shoot
+    m_controller.rightTrigger()
+    .whileTrue(new HoldShootCommand(m_shooterSubsystem, m_intakeSubsystem));
   
    }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
+  
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return m_driveCommand;
