@@ -50,7 +50,7 @@ public class DriveCommand extends Command {
         double scale = m_drive.getDriveScale(); // get drive scale from SmartDashboard
         
          // Arcade drive
-        double turnPower = MathUtil.applyDeadband(m_controller.getLeftX(), OperatorConstants.kDeadband) * scale;
+        double turnPower = -MathUtil.applyDeadband(m_controller.getLeftX(), OperatorConstants.kDeadband) * scale;
 
 
         // Optional: Tank drive

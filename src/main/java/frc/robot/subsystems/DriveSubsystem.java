@@ -66,15 +66,14 @@ public class DriveSubsystem extends SubsystemBase {
       .idleMode(IdleMode.kBrake);
     
     leftFollowerConfig
-      .follow(DriveConstants.kLeftLeaderCANID,DriveConstants.kLeftInverted)
+      .follow(DriveConstants.kLeftLeaderCANID,false)
       .smartCurrentLimit(DriveConstants.kCurrentLimit)
       .openLoopRampRate(DriveConstants.kRampRate)
       .voltageCompensation(DriveConstants.kVoltCompensation)
       .idleMode(IdleMode.kBrake);
     
     rightFollowerConfig
-      //had to set the rightFollower to a different inversion than the right leader for the competition robot. Switch back to .kRightInverted for testbot
-      .follow(DriveConstants.kRightLeaderCANID,DriveConstants.kLeftInverted)
+      .follow(DriveConstants.kRightLeaderCANID,false)
       .smartCurrentLimit(DriveConstants.kCurrentLimit)
       .openLoopRampRate(DriveConstants.kRampRate)
       .voltageCompensation(DriveConstants.kVoltCompensation)
