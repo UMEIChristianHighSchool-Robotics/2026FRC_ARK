@@ -7,15 +7,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.commands.AutoDriveCommand;
-import frc.robot.commands.DeployAndIntakeCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.HoldShootCommand;
 import frc.robot.commands.IntakeDownCommand;
@@ -46,9 +40,7 @@ public class RobotContainer {
   public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_controller);
   public final RunIntakeRollerCommand m_runIntakeRollerCommand = new RunIntakeRollerCommand(m_intakeSubsystem);
   public final ReverseIntakeRollerCommand m_reverseIntakeRollerCommand = new ReverseIntakeRollerCommand(m_intakeSubsystem);
-  public final AutoDriveCommand m_autoDriveCommand = new AutoDriveCommand(m_driveSubsystem, OperatorConstants.kxSpeed, OperatorConstants.kzRotation);
   public final IntakeDownCommand m_intakeDownCommand = new IntakeDownCommand(m_intakeSubsystem);
-  public final DeployAndIntakeCommand m_deployAndIntakeCommand = new DeployAndIntakeCommand(m_intakeSubsystem);
   public final IntakeUpCommand m_intakeUpCommand = new IntakeUpCommand(m_intakeSubsystem);
   public final IntakeTravelCommand m_intakeTravelCommand = new IntakeTravelCommand(m_intakeSubsystem);
   public final HoldShootCommand m_shootCommand = new HoldShootCommand(m_shooterSubsystem, m_intakeSubsystem);
@@ -58,7 +50,8 @@ public class RobotContainer {
     
     // Set default subsystem commands in the constructor
     m_driveSubsystem.setDefaultCommand(m_driveCommand);
-    m_intakeSubsystem.setDefaultCommand(new RunCommand(m_intakeSubsystem::stopRoller, m_intakeSubsystem));
+    m_intakeSubsystem.setDefaultCommand(
+        new RunCommand(m_intakeSubsystem::stopRoller, m_intakeSubsystem));
     m_shooterSubsystem.setDefaultCommand(
         new ShooterIdleCommand(m_shooterSubsystem)
       );

@@ -80,14 +80,11 @@ public class IntakeSubsystem extends SubsystemBase {
         IntakeConstants.kD
     );
   
-<<<<<<< Updated upstream
   //Create a tab in Shuffleboard
   private final ShuffleboardTab intakeTab= Shuffleboard.getTab("Intake");
   
 
-=======
   @SuppressWarnings("removal")
->>>>>>> Stashed changes
   public IntakeSubsystem() {
  
     //Configure motor controllers inside the constructor
@@ -131,17 +128,18 @@ public class IntakeSubsystem extends SubsystemBase {
     // If it's somewhere unexpected, choose the safest position
     currentState = IntakeState.UP;
     }
-    
-  //telemetry
+
+  //Telemetry
     intakeTab.add("Intake kP",IntakeConstants.kP);
     intakeTab.add("Intake kGff",IntakeConstants.kGFeedForward);
     intakeTab.add("FWD Soft Limit",IntakeConstants.kForwardSoftLimit);
     intakeTab.add("REV Soft Limit",IntakeConstants.kReverseSoftLimit);
 
-    intakeTab.addDouble("Roller Speed", ()->intakeRoller.get());
-    intakeTab.addDouble("Deploy Position", intakeDeployEncoder.getAbsolutePosition());
-    intakeTab.addBoolean("At Setpoint", intakeDeployEncoder::atSetpoint);
-  
+    intakeTab.addDouble("Deploy Angle (rad)", this::getAngleRadians);
+    intakeTab.addDouble("Target Angle (rad)", () -> currentState.radians);
+    intakeTab.addBoolean("At Setpoint", deployPID::atSetpoint);
+    intakeTab.addDouble("Roller Output", ()->intakeRoller.get());
+
   }
 
   //---------------Intake Roller Methods----------------------//

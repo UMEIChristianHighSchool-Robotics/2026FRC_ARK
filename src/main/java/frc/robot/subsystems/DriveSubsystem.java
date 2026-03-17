@@ -204,7 +204,7 @@ public Command DriveCommand(DoubleSupplier left, DoubleSupplier right) {
         double current = leftEncoder.getPosition();
         double output = turnPID.calculate(current, wheelDistance);
   
-        output=MathUlil.clamp(output,-0.6,0.6)
+        output = MathUtil.clamp(output,-0.6,0.6);
 
         //Left forward, right backward
         setTankPower(output, -output);
