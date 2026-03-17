@@ -14,7 +14,8 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
@@ -38,7 +39,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private SparkFlexConfig rightMotorConfig = new SparkFlexConfig();
   private SparkFlexConfig leftMotorConfig = new SparkFlexConfig();
 
-  
+  //Create a tab in Shuffleboard
+  ShuffleboardTab shooterTab= Shuffleboard.getTab("Shooter");
+    
   public ShooterSubsystem() {
 
     //pull in the built-in encoders & closed loop control inside the constructor
@@ -89,10 +92,11 @@ public class ShooterSubsystem extends SubsystemBase {
     rightMotor.configure(rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     leftMotor.configure(leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   
-    // Initialize dashboard values
-    SmartDashboard.putNumber("Shooter Target RPM", targetRPM);
-    SmartDashboard.putNumber("Shooter Actual RPM", rightEncoder.getVelocity());
-  
+    //Telemetry
+    shooterTab.add("LeftShooter Speed", leftEncoder.getVelocity());
+    shooterTab.add("RightShooter Speed", rightEncoder.getVelocity());
+    shooterTab.addBoolean("Right at speed", rightEncoder::rightAtSpeed);
+    
   }
 
   // A method to set the velocity of the launching rollers; command can set velocity
@@ -124,8 +128,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    
-    SmartDashboard.putNumber("Shooter RPM Right", rightEncoder.getVelocity());
-    SmartDashboard.putNumber("Shooter RPM Left", leftEncoder.getVelocity());
+
   }
 }

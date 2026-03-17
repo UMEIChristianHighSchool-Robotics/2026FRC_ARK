@@ -17,7 +17,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
@@ -34,7 +36,8 @@ public class IntakeSubsystem extends SubsystemBase {
     IntakeState(double radians){
       this.radians = radians;
     }
-  }
+ 
+ }
 
   //-------Declare and initialize the motor controllers-----------/
   
@@ -77,6 +80,10 @@ public class IntakeSubsystem extends SubsystemBase {
         IntakeConstants.kD
     );
   
+  //Create a tab in Shuffleboard
+  private final ShuffleboardTab intakeTab= Shuffleboard.getTab("Intake");
+  
+
   public IntakeSubsystem() {
  
     //Configure motor controllers inside the constructor
@@ -121,21 +128,16 @@ public class IntakeSubsystem extends SubsystemBase {
     currentState = IntakeState.UP;
     }
     
-    //--------Constants that do not change are published once at startup------------------/
-    // Intake voltages & speeds (tunable at event)
-    SmartDashboard.putNumber("Intake Roller Voltage", IntakeConstants.kRollerVoltage);
-    SmartDashboard.putNumber("Intake Deploy/Pivot Voltage", IntakeConstants.kDeployVoltage);
+  //telemetry
+    intakeTab.add("Intake kP",IntakeConstants.kP);
+    intakeTab.add("Intake kGff",IntakeConstants.kGFeedForward);
+    intakeTab.add("FWD Soft Limit",IntakeConstants.kForwardSoftLimit);
+    intakeTab.add("REV Soft Limit",IntakeConstants.kReverseSoftLimit);
 
-    // PID / Feedforward (for tuning)
-    SmartDashboard.putNumber("Deploy kP", IntakeConstants.kP);
-    SmartDashboard.putNumber("Deploy kI", IntakeConstants.kI);
-    SmartDashboard.putNumber("Deploy kD", IntakeConstants.kD);
-    SmartDashboard.putNumber("Deploy kG", IntakeConstants.kGFeedForward);
-
-    // Soft limits
-    SmartDashboard.putNumber("Forward Soft Limit", IntakeConstants.kForwardSoftLimit);
-    SmartDashboard.putNumber("Reverse Soft Limit", IntakeConstants.kReverseSoftLimit);
-   
+    intakeTab.addDouble("Roller Speed", ()->intakeRoller.get());
+    intakeTab.addDouble("Deploy Position", intakeDeployEncoder.getAbsolutePosition());
+    intakeTab.addBoolean("At Setpoint", intakeDeployEncoder::atSetpoint);
+  
   }
 
   //---------------Intake Roller Methods----------------------//
@@ -197,15 +199,5 @@ public class IntakeSubsystem extends SubsystemBase {
       (currentAngle <= IntakeConstants.kReverseSoftLimit && outputVolts < 0)) {
         outputVolts = 0;
     }
-        
-    //--------SmartDashboard telemetry updated every 20ms----------------/
-    SmartDashboard.putNumber("Deploy Angle (rad)", currentAngle);
-    SmartDashboard.putNumber("Deploy Angle (deg)", Math.toDegrees(currentAngle));
-    SmartDashboard.putNumber("Deploy Target (rad)", currentState.radians);
-    SmartDashboard.putNumber("Deploy Error (rad)", currentState.radians - currentAngle);
-    SmartDashboard.putString("Intake State", currentState.toString());
-    SmartDashboard.putBoolean("At Target?", isAtTarget());
-    SmartDashboard.putNumber("Raw Encoder Value", intakeDeployEncoder.get());
-
   }
 }

@@ -6,10 +6,11 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj.shuffleboard.*;
-
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
 import static frc.robot.Constants.OperatorConstants;
@@ -19,8 +20,11 @@ public class DriveCommand extends Command {
     private final DriveSubsystem m_drive;
     private final CommandXboxController m_controller;
 
+    //Create a tab in Shuffleboard
+    private ShuffleboardTab driveTab= Shuffleboard.getTab("Drive");
+
     // declare a driveChooser variable and instantiate by assigning it to a string or enum SendableChooser
-    SendableChooser<String> driveChooser = new SendableChooser<String>();
+    private SendableChooser<String> driveChooser = new SendableChooser<String>();
 
      public DriveCommand(DriveSubsystem drive, CommandXboxController controller) {
         addRequirements(drive);
@@ -28,16 +32,12 @@ public class DriveCommand extends Command {
         m_controller = controller;
         
 
-
-        // label for SmartDashbhuffleboard
-        Shuffleboard.putString("Drive Type ", "Select");
-
         // objects that set the options for drive mode
         driveChooser.setDefaultOption("Arcade Drive", "Arcade Drive");
         driveChooser.addOption("Tank Drive", "Tank Drive");
 
         // maps the Drive Mode key to the sendable DriveChooser variable
-        SmartDashbhuffleboard.putData("Drive Mode", driveChooser);
+        driveTab.add("Drive Mode", driveChooser);
     
     }
     
@@ -48,7 +48,7 @@ public class DriveCommand extends Command {
     
     @Override
     public void execute() {
-        double scale = m_drive.getDriveScale(); // get drive scale from SmartDashbhuffleboard
+        double scale = m_drive.getDriveScale(); // get drive scale from Shuffleboard
         
          // Arcade drive
         double turnPower = -MathUtil.applyDeadband(m_controller.getLeftX(), OperatorConstants.kDeadband) * scale;

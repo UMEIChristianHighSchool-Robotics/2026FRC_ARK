@@ -118,7 +118,6 @@ public final class Constants {
       public static final boolean kReverseSoftLimitEnabled = true;//test and confirm limits first
 
       //---------------------Optional Tunables------------------------//
-      /*Default constants you want to tweak live from SmartDashboard */
       public static final double kRollerVoltage = 8;
       public static final double kDeployVoltage = 4;
    

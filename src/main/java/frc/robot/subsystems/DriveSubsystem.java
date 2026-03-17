@@ -42,7 +42,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final DifferentialDrive m_drive = new DifferentialDrive(leftLeader,rightLeader);
 
   //Create a tab in Shuffleboard
-  private final ShuffleboardTab driveTab= Shuffleboard.getTab("Drive");
+  private ShuffleboardTab driveTab= Shuffleboard.getTab("Drive");
 
   // declare a variable called driveScaleChooser and initilaize an instance for selecting desired drive speed/scale/power
   private SendableChooser<Double> driveScaleChooser = new SendableChooser<>();
@@ -103,9 +103,12 @@ public class DriveSubsystem extends SubsystemBase {
     driveScaleChooser.addOption("50%", 0.5);
     driveScaleChooser.addOption("25%", 0.25);
 
-    // set the selected driveScaleChooser value
+    // Telemetry
     driveTab.add("Drivetrain Speed", driveScaleChooser);
-    
+    driveTab.addDouble("Left Encoder",()-> leftEncoder.getPosition());
+    driveTab.addDouble("Right Encoder",()-> rightEncoder.getPosition());
+    driveTab.addDouble("Distance (m)", this::getDistanceMeters);
+
 }
 
 public double getDriveScale() {
