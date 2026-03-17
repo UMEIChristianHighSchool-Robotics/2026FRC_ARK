@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoASequenceCommand;
+import frc.robot.commands.AutoBSequenceCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.HoldShootCommand;
 import frc.robot.commands.IntakeDownCommand;
@@ -37,6 +39,8 @@ public class RobotContainer {
   public final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   //Commands
+  public final AutoASequenceCommand m_AutoASequenceCommand = new AutoASequenceCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
+  public final AutoBSequenceCommand m_AutoBSequenceCommand = new AutoBSequenceCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
   public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_controller);
   public final RunIntakeRollerCommand m_runIntakeRollerCommand = new RunIntakeRollerCommand(m_intakeSubsystem);
   public final ReverseIntakeRollerCommand m_reverseIntakeRollerCommand = new ReverseIntakeRollerCommand(m_intakeSubsystem);
@@ -56,7 +60,7 @@ public class RobotContainer {
         new ShooterIdleCommand(m_shooterSubsystem)
       );
 
-    // Set default state when the robot initializes
+    // Set default intake state when the robot initializes
     m_intakeSubsystem.setState(IntakeState.TRAVEL);
 
     // Configure the trigger bindings
@@ -78,7 +82,8 @@ public class RobotContainer {
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
     autoChooser.setDefaultOption("TeleOp", m_driveCommand);
-   //autoChooser.addOption("Autonomous", m_autoSequenceCommand);
+    autoChooser.addOption("Auto A", m_AutoASequenceCommand);
+    autoChooser.addOption("Auto B", m_AutoBSequenceCommand);
  
   }
 
