@@ -90,11 +90,15 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    // Press the a button to lower the intake to the down position
+    //A button: Intake DOWN
     m_controller.a().onTrue(new IntakeDownCommand(m_intakeSubsystem));
-    //Press the b button to lift the intake to the up position
-    m_controller.b().onTrue(new IntakeUpCommand(m_intakeSubsystem));
-    
+
+    //B button: Intake TRAVEL
+    m_controller.b().onTrue(new IntakeTravelCommand(m_intakeSubsystem));
+
+    //Y button: Intake UP
+    m_controller.y().onTrue(new IntakeUpCommand(m_intakeSubsystem));
+
     //Left trigger: intake roller
     m_controller.leftTrigger().whileTrue(new RunIntakeRollerCommand(m_intakeSubsystem));
     
