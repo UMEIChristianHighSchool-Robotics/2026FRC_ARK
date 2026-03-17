@@ -85,24 +85,24 @@ public final class Constants {
       /*Where the intake can be (pivot angles) */
     
       //Intake deploy position radians
-      public static final double kUpRadians = 0.0;
-      public static final double kTravelRadians = 0.6;
-      public static final double kIntakeRadians = 1.3;
+      public static final double kUpRadians = 1.1;
+      public static final double kTravelRadians = 3.2;
+      public static final double kIntakeRadians = 4.0;
     
       //Zero offset for encoder calibration
-      public static final double kZeroOffset = 0.02;//to find this value put intake in the UP position physically. Print encoder value to dashboard. That value becomes your offset.
+      public static final double kZeroOffset = 0.00;//to find this value put intake in the UP position physically. Print encoder value to dashboard. That value becomes your offset.
     
       //---------------------PID / Feedforward------------------------//
       /*Tuning the pivot motor PID and gravity compensation */
     
       //PID constants
-      public static final double kP = 1.0;
+      public static final double kP = 2.0;
       public static final double kI = 0;// leave 0
       public static final double kD = 0;// leave 0
     
       //Feedforward for gravity compendation
       public static final double kSFeedForward = 0.0; // kS (start with 0)
-      public static final double kGFeedForward = 0.4; // guess to start
+      public static final double kGFeedForward = 0.2; // guess to start
       public static final double kVFeedForward = 0.0; // usually stays at 0
        
       //PID tolerance (radians)
@@ -112,14 +112,14 @@ public final class Constants {
     
       //Pivot soft limits (radians)
       /*Move the move intake to up/down positions manually, print encoder radians to dashboard, add/subtract 0.1 rad for safety */
-      public static final double kForwardSoftLimit = 1.52; // down
-      public static final double kReverseSoftLimit = -0.1; // up
+      public static final double kForwardSoftLimit = 4.2; // down
+      public static final double kReverseSoftLimit = 1.1; // up
       public static final boolean kForwardSoftLimitEnabled = true;//test and confirm limits first
       public static final boolean kReverseSoftLimitEnabled = true;//test and confirm limits first
 
       //---------------------Optional Tunables------------------------//
       public static final double kRollerVoltage = 8;
-      public static final double kDeployVoltage = 4;
+      public static final double kDeployVoltage = 12;
    
   }
 

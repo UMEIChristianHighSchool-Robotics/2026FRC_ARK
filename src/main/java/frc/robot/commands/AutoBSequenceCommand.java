@@ -4,8 +4,8 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+//import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+//import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -16,7 +16,7 @@ public class AutoBSequenceCommand extends SequentialCommandGroup {
     private final ShooterSubsystem m_shooter;
 
     // Example Shuffleboard tab
-    private final ShuffleboardTab autoTab = Shuffleboard.getTab("Auto");
+    //private final ShuffleboardTab autoTab = Shuffleboard.getTab("Auto");
 
     public AutoBSequenceCommand(
             DriveSubsystem drive,
@@ -59,6 +59,6 @@ public class AutoBSequenceCommand extends SequentialCommandGroup {
         );
 
         // Optional: add telemetry to Shuffleboard
-        autoTab.addBoolean("All Systems Active", () -> true);
+        //autoTab.addBoolean("All Systems Active", () -> true);
     }
 }
