@@ -80,10 +80,14 @@ public class IntakeSubsystem extends SubsystemBase {
         IntakeConstants.kD
     );
   
+<<<<<<< Updated upstream
   //Create a tab in Shuffleboard
   private final ShuffleboardTab intakeTab= Shuffleboard.getTab("Intake");
   
 
+=======
+  @SuppressWarnings("removal")
+>>>>>>> Stashed changes
   public IntakeSubsystem() {
  
     //Configure motor controllers inside the constructor

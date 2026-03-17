@@ -33,6 +33,22 @@ public class DriveSubsystem extends SubsystemBase {
   private RelativeEncoder leftEncoder;
   private RelativeEncoder rightEncoder;
 
+  //Distance PID Controller
+  private PIDController distancePID =
+    new PIDController(
+      DriveConstants.kDistanceP,
+      DriveConstants.kDistanceI,
+      DriveConstants.kDistanceD
+    );
+  
+  //Turn PID Controller
+   private PIDController turnPID =
+    new PIDController(
+      DriveConstants.kTurnP,
+      DriveConstants.kTurnI,
+      DriveConstants.kTurnD
+    );
+
   //Declare configurations
   private SparkMaxConfig leftLeaderConfig = new SparkMaxConfig();
   private SparkMaxConfig rightLeaderConfig = new SparkMaxConfig();
@@ -48,6 +64,7 @@ public class DriveSubsystem extends SubsystemBase {
   private SendableChooser<Double> driveScaleChooser = new SendableChooser<>();
 
   
+  @SuppressWarnings("removal")
   public DriveSubsystem() {
     //pull in the built-in encoders & closed loop control inside the constructor
     leftEncoder = leftLeader.getEncoder();
@@ -88,7 +105,12 @@ public class DriveSubsystem extends SubsystemBase {
       .positionConversionFactor(DriveConstants.kMetersPerRotation);
     rightLeaderConfig.encoder
       .positionConversionFactor(DriveConstants.kMetersPerRotation);
-    
+  
+    //Set PID tolerances in the constructor
+    distancePID.setTolerance(DriveConstants.kDistanceTolerance);
+    turnPID.setTolerance(DriveConstants.kTurnTolerance);
+
+    //Apply configurations to the motors in the constructor
     leftLeader.configure(leftLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     rightLeader.configure(rightLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     leftFollower.configure(leftFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -157,9 +179,6 @@ public Command DriveCommand(DoubleSupplier left, DoubleSupplier right) {
 
   //method to return drive forward command for autonomous sequence use
   public Command driveForwardMeters(double meters) {
-    PIDController distancePID = new PIDController(DriveConstants.kDistanceP,DriveConstants.kDistanceI,DriveConstants.kDistanceD);
-    distancePID.setTolerance(DriveConstants.kDistanceTolerance);
-
     SlewRateLimiter distanceLimiter = new SlewRateLimiter(DriveConstants.kDistanceSlewRateLimit); // optional
 
     return run(() -> {
@@ -168,7 +187,10 @@ public Command DriveCommand(DoubleSupplier left, DoubleSupplier right) {
         output = MathUtil.clamp(distanceLimiter.calculate(output), -0.6, 0.6);
         m_drive.arcadeDrive(output, 0);
     })
-    .beforeStarting(this::resetEncoders)
+    .beforeStarting(() -> {
+        resetEncoders();
+        distancePID.reset();
+    })
     .until(distancePID::atSetpoint)
     .finallyDo(interrupted -> stop());
 }
@@ -179,6 +201,14 @@ public Command DriveCommand(DoubleSupplier left, DoubleSupplier right) {
     double wheelDistance = (degrees / 360.0) * DriveConstants.kTurnCircumference;
 
     return run(() -> {
+        double current = leftEncoder.getPosition();
+        double output = turnPID.calculate(current, wheelDistance);
+  
+        output=MathUlil.clamp(output,-0.6,0.6)
+
+        //Left forward, right backward
+        setTankPower(output, -output);
+
         double leftTarget = leftEncoder.getPosition() + wheelDistance;
         double rightTarget = rightEncoder.getPosition() - wheelDistance;
 

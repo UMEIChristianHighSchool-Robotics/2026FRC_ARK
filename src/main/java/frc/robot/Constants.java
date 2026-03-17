@@ -47,7 +47,7 @@ public final class Constants {
       public static final double kTurnP=1.0;
       public static final double kTurnI=0;
       public static final double kTurnD=0;
-      public static final double kTurnTolerance=2.0; //degrees
+      public static final double kTurnTolerance=0.01; //meters
       public static final double kTurnSlewRateLimit = 3.0;//max output change per second
       
   }
