@@ -6,7 +6,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.*;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.subsystems.DriveSubsystem;
@@ -28,15 +29,15 @@ public class DriveCommand extends Command {
         
 
 
-        // label for SmartDashboard
-        SmartDashboard.putString("Drive Type ", "Select");
+        // label for SmartDashbhuffleboard
+        Shuffleboard.putString("Drive Type ", "Select");
 
         // objects that set the options for drive mode
         driveChooser.setDefaultOption("Arcade Drive", "Arcade Drive");
         driveChooser.addOption("Tank Drive", "Tank Drive");
 
         // maps the Drive Mode key to the sendable DriveChooser variable
-        SmartDashboard.putData("Drive Mode", driveChooser);
+        SmartDashbhuffleboard.putData("Drive Mode", driveChooser);
     
     }
     
@@ -47,7 +48,7 @@ public class DriveCommand extends Command {
     
     @Override
     public void execute() {
-        double scale = m_drive.getDriveScale(); // get drive scale from SmartDashboard
+        double scale = m_drive.getDriveScale(); // get drive scale from SmartDashbhuffleboard
         
          // Arcade drive
         double turnPower = -MathUtil.applyDeadband(m_controller.getLeftX(), OperatorConstants.kDeadband) * scale;

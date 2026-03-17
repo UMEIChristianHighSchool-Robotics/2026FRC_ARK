@@ -14,7 +14,8 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -39,6 +40,9 @@ public class DriveSubsystem extends SubsystemBase {
   private SparkMaxConfig leftFollowerConfig = new SparkMaxConfig();
 
   private final DifferentialDrive m_drive = new DifferentialDrive(leftLeader,rightLeader);
+
+  //Create a tab in Shuffleboard
+  private final ShuffleboardTab driveTab= Shuffleboard.getTab("Drive");
 
   // declare a variable called driveScaleChooser and initilaize an instance for selecting desired drive speed/scale/power
   private SendableChooser<Double> driveScaleChooser = new SendableChooser<>();
@@ -92,17 +96,15 @@ public class DriveSubsystem extends SubsystemBase {
 
     m_drive.setSafetyEnabled(true);
     
-    // label for SmartDashboard
-    SmartDashboard.putString("Drivetrain ", "Select Power");
-
-     // list drive scale/power/speed options for SmartDashboard
+ 
+    // list drive scale/power/speed options for Shuffleboard
     driveScaleChooser.addOption("100%", 1.0);
     driveScaleChooser.setDefaultOption("75%", 0.75);
     driveScaleChooser.addOption("50%", 0.5);
     driveScaleChooser.addOption("25%", 0.25);
 
     // set the selected driveScaleChooser value
-     SmartDashboard.putData("Drivetrain Speed", driveScaleChooser);
+    driveTab.add("Drivetrain Speed", driveScaleChooser);
     
 }
 
