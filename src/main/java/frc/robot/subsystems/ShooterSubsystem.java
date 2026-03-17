@@ -42,6 +42,7 @@ public class ShooterSubsystem extends SubsystemBase {
   //Create a tab in Shuffleboard
   ShuffleboardTab shooterTab= Shuffleboard.getTab("Shooter");
     
+  @SuppressWarnings("removal")
   public ShooterSubsystem() {
 
     //pull in the built-in encoders & closed loop control inside the constructor
@@ -93,9 +94,10 @@ public class ShooterSubsystem extends SubsystemBase {
     leftMotor.configure(leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   
     //Telemetry
-    shooterTab.add("LeftShooter Speed", leftEncoder.getVelocity());
-    shooterTab.add("RightShooter Speed", rightEncoder.getVelocity());
-    shooterTab.addBoolean("Right at speed", rightEncoder::rightAtSpeed);
+    shooterTab.addDouble("Left Shooter Speed", leftEncoder::getVelocity);
+    shooterTab.addDouble("Right Shooter Speed", rightEncoder::getVelocity);
+
+    shooterTab.addBoolean("Shooter at speed", this::atSpeed);
     
   }
 
