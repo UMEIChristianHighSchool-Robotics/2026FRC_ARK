@@ -96,17 +96,17 @@ public final class Constants {
       /*Tuning the pivot motor PID and gravity compensation */
     
       //PID constants
-      public static final double kP = 2.0;
-      public static final double kI = 0;// leave 0
-      public static final double kD = 0;// leave 0
+      public static final double kP = 0.9;
+      public static final double kI = 0.0;
+      public static final double kD = 0.08;
     
       //Feedforward for gravity compendation
-      public static final double kSFeedForward = 0.0; // kS (start with 0)
-      public static final double kGFeedForward = 0.1; // guess to start
-      public static final double kVFeedForward = 0.0; // usually stays at 0
+      public static final double kSFeedForward = 0.0;
+      public static final double kGFeedForward = 0.55; 
+      public static final double kVFeedForward = 0.0; 
        
       //PID tolerance (radians)
-      public static final double kDeployTolerance = 0.05;
+      public static final double kDeployTolerance = 0.08;
 
       //---------------------Software limits------------------------//
     
