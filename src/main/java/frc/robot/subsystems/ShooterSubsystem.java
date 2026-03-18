@@ -124,8 +124,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // A method to stop the launching rollers
  public void stop() {
-  rightClosedLoopControl.setSetpoint(0, ControlType.kVelocity);
-  leftClosedLoopControl.setSetpoint(0, ControlType.kVelocity);
+  targetRPM = 0.0;
+  rightMotor.stopMotor();
+  leftMotor.stopMotor();
 }
 
   @Override
