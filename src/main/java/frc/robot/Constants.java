@@ -96,7 +96,7 @@ public final class Constants {
       /*Tuning the pivot motor PID and gravity compensation */
     
       //PID constants
-      public static final double kP = 0.9;
+      public static final double kP = 1.0;
       public static final double kI = 0.0;
       public static final double kD = 0.08;
     
