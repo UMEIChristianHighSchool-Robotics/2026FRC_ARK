@@ -135,6 +135,9 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeTab.add("FWD Soft Limit",IntakeConstants.kForwardSoftLimit);
     intakeTab.add("REV Soft Limit",IntakeConstants.kReverseSoftLimit);
 
+    intakeTab.addDouble("PID Output", () -> deployPID.calculate(getAngleRadians(), currentState.radians));
+    intakeTab.addDouble("Angle Error", () -> currentState.radians - getAngleRadians());
+
     intakeTab.addDouble("Deploy Angle (rad)", this::getAngleRadians);
     intakeTab.addDouble("Target Angle (rad)", () -> currentState.radians);
     intakeTab.addBoolean("At Setpoint", deployPID::atSetpoint);
