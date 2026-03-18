@@ -187,19 +187,21 @@ public class IntakeSubsystem extends SubsystemBase {
     
     double currentAngle = intakeDeployEncoder.get(); //reads current angle from encoder
     double targetAngle = currentState.radians;
+
     double pidOutput = deployPID.calculate(currentAngle, targetAngle); //calculates correction voltage to reach target
     double ff = feedforward.calculate(targetAngle, 0);//feedforward for gravity compensation
     double outputVolts = MathUtil.clamp(pidOutput + ff, -12, 12);
-        
-    // Only apply voltage when robot is enabled
-    if (DriverStation.isEnabled()) {
-        intakeDeployMotor.setVoltage(outputVolts);
-    }
-    
+   
     //apply software soft limits
     if ((currentAngle >= IntakeConstants.kForwardSoftLimit && outputVolts > 0) ||
       (currentAngle <= IntakeConstants.kReverseSoftLimit && outputVolts < 0)) {
         outputVolts = 0;
     }
-  }
+    
+    // Only apply voltage when robot is enabled
+    if (DriverStation.isEnabled()) {
+        intakeDeployMotor.setVoltage(outputVolts);
+    }
+  }    
+   
 }
