@@ -10,20 +10,6 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class ShooterIdleCommand extends RunCommand {
 
   public ShooterIdleCommand(ShooterSubsystem shooter) {
-    super(() -> shooter.stop(), shooter);
-  }
-
-  @Override
-  public void initialize() {}
-
-  @Override
-  public void execute() {}
-
-  @Override
-  public void end(boolean interrupted) {}
-
-  @Override
-  public boolean isFinished() {
-    return false;
+    super(shooter::stop, shooter);
   }
 }
