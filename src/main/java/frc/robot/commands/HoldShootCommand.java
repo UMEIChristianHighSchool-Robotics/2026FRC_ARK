@@ -33,9 +33,6 @@ public class HoldShootCommand extends Command {
     @Override
   public void execute() {
 
-    // Keep shooter spinning
-    m_shooterSubsystem.setTargetRPM(ShooterConstants.kTargetSpeed);
-
     // Only feed when ready
     if (m_shooterSubsystem.atSpeed()) {
       m_intakeSubsystem.runRoller(IntakeConstants.kRollerVoltage);
