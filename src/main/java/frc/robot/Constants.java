@@ -85,9 +85,9 @@ public final class Constants {
       /*Where the intake can be (pivot angles) */
     
       //Intake deploy position radians
-      public static final double kUpRadians = 1.1;
-      public static final double kTravelRadians = 3.2;
-      public static final double kIntakeRadians = 4.0;
+      public static final double kUpRadians = 0.5;
+      public static final double kTravelRadians = 3.5;
+      public static final double kIntakeRadians = 3.8;
     
       //Zero offset for encoder calibration
       public static final double kZeroOffset = 0.00;//to find this value put intake in the UP position physically. Print encoder value to dashboard. That value becomes your offset.
@@ -102,7 +102,7 @@ public final class Constants {
     
       //Feedforward for gravity compendation
       public static final double kSFeedForward = 0.0; // kS (start with 0)
-      public static final double kGFeedForward = 0.2; // guess to start
+      public static final double kGFeedForward = 0.1; // guess to start
       public static final double kVFeedForward = 0.0; // usually stays at 0
        
       //PID tolerance (radians)
@@ -112,8 +112,8 @@ public final class Constants {
     
       //Pivot soft limits (radians)
       /*Move the move intake to up/down positions manually, print encoder radians to dashboard, add/subtract 0.1 rad for safety */
-      public static final double kForwardSoftLimit = 4.2; // down
-      public static final double kReverseSoftLimit = 1.1; // up
+      public static final double kForwardSoftLimit = 4.4; // down
+      public static final double kReverseSoftLimit = 0.3; // up
       public static final boolean kForwardSoftLimitEnabled = true;//test and confirm limits first
       public static final boolean kReverseSoftLimitEnabled = true;//test and confirm limits first
 
