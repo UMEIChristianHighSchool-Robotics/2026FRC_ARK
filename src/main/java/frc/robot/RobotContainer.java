@@ -11,7 +11,9 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.TaxiOnlyAutoCommand;
+import frc.robot.commands.TaxiShootAutoCommand;
 import frc.robot.commands.TwoPieceAutoCommand;
+import frc.robot.commands.SweepAutoCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.HoldShootCommand;
 import frc.robot.commands.IntakeDownCommand;
@@ -40,7 +42,9 @@ public class RobotContainer {
 
   //Commands
   public final TaxiOnlyAutoCommand m_TaxiOnlyAutoCommand = new TaxiOnlyAutoCommand(m_driveSubsystem);
+  public final TaxiShootAutoCommand m_TaxiShootAutoCommand = new TaxiShootAutoCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
   public final TwoPieceAutoCommand m_TwoPieceAutoCommand = new TwoPieceAutoCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
+  public final SweepAutoCommand m_SweepAutoCommand = new SweepAutoCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
   public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_controller);
   public final RunIntakeRollerCommand m_runIntakeRollerCommand = new RunIntakeRollerCommand(m_intakeSubsystem);
   public final ReverseIntakeRollerCommand m_reverseIntakeRollerCommand = new ReverseIntakeRollerCommand(m_intakeSubsystem);
@@ -82,8 +86,9 @@ public class RobotContainer {
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
     autoChooser.setDefaultOption("Mobility Only Auto", m_TaxiOnlyAutoCommand);
-    //autoChooser.addOption("Score + Mobility Auto", m_TaxiOnlyAutoCommand);
+    autoChooser.addOption("Score + Mobility Auto", m_TaxiOnlyAutoCommand);
     autoChooser.addOption("Two Piece Auto", m_TwoPieceAutoCommand);
+    autoChooser.addOption("Two Piece + Sweep Auto", m_SweepAutoCommand);
 
     Shuffleboard.getTab("Auto").add("Auto Chooser", autoChooser); 
   }
