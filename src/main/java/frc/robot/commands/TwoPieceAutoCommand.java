@@ -4,21 +4,20 @@
 
 package frc.robot.commands;
 
-//import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-//import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class AutoASequenceCommand extends SequentialCommandGroup {
+public class TwoPieceAutoCommand extends SequentialCommandGroup {
+
 
     private final ShooterSubsystem m_shooter;
+    private final ShuffleboardTab autoTab = Shuffleboard.getTab("Auto");
 
-    // Example Shuffleboard tab
-    //private final ShuffleboardTab autoTab = Shuffleboard.getTab("Auto");
-
-    public AutoASequenceCommand(
+    public TwoPieceAutoCommand(
             DriveSubsystem drive,
             IntakeSubsystem intake,
             ShooterSubsystem shooter) {

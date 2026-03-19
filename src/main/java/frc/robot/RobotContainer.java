@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AutoASequenceCommand;
-import frc.robot.commands.AutoBSequenceCommand;
+import frc.robot.commands.TaxiOnlyAutoCommand;
+import frc.robot.commands.TwoPieceAutoCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.HoldShootCommand;
 import frc.robot.commands.IntakeDownCommand;
@@ -39,8 +39,8 @@ public class RobotContainer {
   public final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   //Commands
-  public final AutoASequenceCommand m_AutoASequenceCommand = new AutoASequenceCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
-  public final AutoBSequenceCommand m_AutoBSequenceCommand = new AutoBSequenceCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
+  public final TaxiOnlyAutoCommand m_TaxiOnlyAutoCommand = new TaxiOnlyAutoCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
+  public final TwoPieceAutoCommand m_TwoPieceAutoCommand = new TwoPieceAutoCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
   public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_controller);
   public final RunIntakeRollerCommand m_runIntakeRollerCommand = new RunIntakeRollerCommand(m_intakeSubsystem);
   public final ReverseIntakeRollerCommand m_reverseIntakeRollerCommand = new ReverseIntakeRollerCommand(m_intakeSubsystem);
@@ -82,8 +82,9 @@ public class RobotContainer {
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
     autoChooser.setDefaultOption("TeleOp", m_driveCommand);
-    autoChooser.addOption("Auto A", m_AutoASequenceCommand);
-    autoChooser.addOption("Auto B", m_AutoBSequenceCommand);
+    autoChooser.addOption("Mobility Only Auto", m_TaxiOnlyAutoCommand);
+    //autoChooser.addOption("Score + Mobility Auto", m_TaxiOnlyAutoCommand);
+    autoChooser.addOption("Two Piece Auto", m_TwoPieceAutoCommand);
  
   }
 
