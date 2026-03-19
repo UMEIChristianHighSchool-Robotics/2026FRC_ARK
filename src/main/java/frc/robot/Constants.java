@@ -87,7 +87,7 @@ public final class Constants {
       //Intake deploy position radians
       public static final double kUpRadians = 0.5;
       public static final double kTravelRadians = 3.5;
-      public static final double kIntakeRadians = 3.8;
+      public static final double kIntakeRadians = 4.0;
     
       //Zero offset for encoder calibration
       public static final double kZeroOffset = 0.00;//to find this value put intake in the UP position physically. Print encoder value to dashboard. That value becomes your offset.

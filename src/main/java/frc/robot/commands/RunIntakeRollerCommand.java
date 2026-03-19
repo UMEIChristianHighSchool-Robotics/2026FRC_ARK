@@ -15,7 +15,7 @@ public class RunIntakeRollerCommand extends Command {
 
   @Override
   public void execute() {
-    intake.runRoller(IntakeConstants.kRollerVoltage);
+    intake.runRoller(-IntakeConstants.kRollerVoltage);
   }
 
   @Override
