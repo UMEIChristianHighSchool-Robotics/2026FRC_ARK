@@ -162,9 +162,21 @@ public final class Constants {
     public static final int kYButton = 4;
 
     //Speed and deadband
-    public static final double kDriveSpeedScale = 0.8;
-    public static final double kRotationScale = 0.8;
     public static final double kDeadband = 0.05;
+    public enum SpeedSelect{
+      CRAWL(0.10,0.10),
+      SLOW(0.30,0.15),
+      DRIVE(0.70,0.50),
+      FAST(1.00,0.30);
+
+      public final double driveScale;
+      public final double turnScale;
+
+      SpeedSelect(double driveScale, double turnScale){
+        this.driveScale=driveScale;
+        this.turnScale=turnScale;
+      }
+    }
 
     //auto drive
     public static final double kxSpeed = 0.5;
