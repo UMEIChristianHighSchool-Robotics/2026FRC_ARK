@@ -55,7 +55,7 @@ public class TwoPieceAutoCommand extends SequentialCommandGroup {
         );
 
          //telemetry
-        autoTab.addDouble("Distance (m)", m_drive::getDistanceMeters);
+        autoTab.addDouble("AutoDistance (m)", m_drive::getDistanceMeters);
         autoTab.addBoolean("Shooter at speed", m_shooter::atSpeed);
     }
 }

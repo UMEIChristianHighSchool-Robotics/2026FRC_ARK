@@ -82,7 +82,7 @@ public class RobotContainer {
       .addNumber("Right Y", this::getRightYValue)
       .withPosition(6, 4);
  
-      // Set the options to show up in the Dashboard for selecting auto modes. If you
+    // Set the options to show up in the Dashboard for selecting auto modes. If you
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
     autoChooser.setDefaultOption("Mobility Only Auto", m_TaxiOnlyAutoCommand);
