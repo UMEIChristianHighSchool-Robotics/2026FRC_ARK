@@ -63,7 +63,7 @@ public final class Constants {
     
       // Motor inversion
       public static final boolean kRollerInverted = false;
-      public static final boolean kDeployInverted = false;
+      public static final boolean kDeployInverted = true;
 
       //Encoder roboRIO DIO port
       public static final int kDeployEncoderDIOPort = 0;
@@ -74,7 +74,7 @@ public final class Constants {
       //Roller motor controller configuration
       public static final int kRollerCurrentLimit = 60;
       public static final double kRollerRampRate = 0.3;
-      public static final double kRollerVoltCompensation = 12.0; //keeps commanded voltage constant depite battery load
+      public static final double kRollerVoltCompensation = 10.0; //keeps commanded voltage constant depite battery load
     
       //Intake deploy motor controller configurations 
       public static final int kDeployCurrentLimit = 40;
@@ -84,10 +84,10 @@ public final class Constants {
       //--------------------- States------------------------//
       /*Where the intake can be (pivot angles) */
     
-      //Intake deploy position radians
-      public static final double kUpRadians = 0.5;
-      public static final double kTravelRadians = 3.5;
-      public static final double kIntakeRadians = 4.0;
+                            //Intake deploy position radians
+                            public static final double kUpRadians = 6.2;
+                            public static final double kTravelRadians = 3.75;
+                            public static final double kIntakeRadians = 3.2;
     
       //Zero offset for encoder calibration
       public static final double kZeroOffset = 0.00;//to find this value put intake in the UP position physically. Print encoder value to dashboard. That value becomes your offset.
@@ -106,14 +106,14 @@ public final class Constants {
       public static final double kVFeedForward = 0.0; 
        
       //PID tolerance (radians)
-      public static final double kDeployTolerance = 0.08;
+      public static final double kDeployTolerance = 0.1;
 
       //---------------------Software limits------------------------//
     
       //Pivot soft limits (radians)
       /*Move the move intake to up/down positions manually, print encoder radians to dashboard, add/subtract 0.1 rad for safety */
-      public static final double kForwardSoftLimit = 4.4; // down
-      public static final double kReverseSoftLimit = 0.3; // up
+      public static final double kForwardSoftLimit = 6.6; // down
+      public static final double kReverseSoftLimit = 2.0; // up
       public static final boolean kForwardSoftLimitEnabled = true;//test and confirm limits first
       public static final boolean kReverseSoftLimitEnabled = true;//test and confirm limits first
 
