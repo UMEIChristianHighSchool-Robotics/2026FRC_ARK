@@ -41,7 +41,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   //Create a tab in Shuffleboard
   ShuffleboardTab shooterTab= Shuffleboard.getTab("Shooter");
-    
+  ShuffleboardTab autoTab= Shuffleboard.getTab("Auto");
+  
   @SuppressWarnings("removal")
   public ShooterSubsystem() {
 
@@ -96,9 +97,8 @@ public class ShooterSubsystem extends SubsystemBase {
     //Telemetry
     shooterTab.addDouble("Left Shooter Speed", leftEncoder::getVelocity);
     shooterTab.addDouble("Right Shooter Speed", rightEncoder::getVelocity);
-
     shooterTab.addBoolean("Shooter at speed", this::atSpeed);
-    
+    autoTab.addBoolean("Shooter at speed", this::atSpeed);
   }
 
   // A method to set the velocity of the launching rollers; command can set velocity

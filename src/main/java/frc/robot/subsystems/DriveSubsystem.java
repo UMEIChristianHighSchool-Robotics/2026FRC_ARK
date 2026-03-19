@@ -59,6 +59,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   //Create a tab in Shuffleboard
   private ShuffleboardTab driveTab= Shuffleboard.getTab("Drive");
+  private ShuffleboardTab autoTab= Shuffleboard.getTab("Auto");
 
   // declare a variable called driveScaleChooser and initilaize an instance for selecting desired drive speed/scale/power
   private SendableChooser<Double> driveScaleChooser = new SendableChooser<>();
@@ -130,6 +131,7 @@ public class DriveSubsystem extends SubsystemBase {
     driveTab.addDouble("Left Encoder",()-> leftEncoder.getPosition());
     driveTab.addDouble("Right Encoder",()-> rightEncoder.getPosition());
     driveTab.addDouble("Distance (m)", this::getDistanceMeters);
+    autoTab.addDouble("Distance (m)", this::getDistanceMeters);
 
 }
 

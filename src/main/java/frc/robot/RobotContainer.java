@@ -71,17 +71,6 @@ public class RobotContainer {
     configureBindings();
  
    
-    
-  // Shuffleboard display for monitoring and Troubleshooting
-
-    Shuffleboard.getTab("DriveTrainDisplay")
-      .addNumber("Left Y", this::getLeftYValue)
-      .withPosition(6, 3);
-
-    Shuffleboard.getTab("DriveTrainDisplay")
-      .addNumber("Right Y", this::getRightYValue)
-      .withPosition(6, 4);
- 
     // Set the options to show up in the Dashboard for selecting auto modes. If you
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
@@ -91,6 +80,7 @@ public class RobotContainer {
     autoChooser.addOption("Two Piece + Sweep Auto", m_SweepAutoCommand);
 
     Shuffleboard.getTab("Auto").add("Auto Chooser", autoChooser); 
+    
   }
 
   private void configureBindings() {

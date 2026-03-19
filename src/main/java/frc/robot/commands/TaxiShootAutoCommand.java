@@ -4,27 +4,18 @@
 
   package frc.robot.commands;
 
-  import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-  import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
   import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
   import frc.robot.subsystems.DriveSubsystem;
   import frc.robot.subsystems.IntakeSubsystem;
   import frc.robot.subsystems.ShooterSubsystem;
 
   public class TaxiShootAutoCommand extends SequentialCommandGroup {
-    
-    private final DriveSubsystem m_drive;
-    private final ShooterSubsystem m_shooter;
-    private final ShuffleboardTab autoTab = Shuffleboard.getTab("Auto");
 
     public TaxiShootAutoCommand(
         DriveSubsystem drive,
         IntakeSubsystem intake,
         ShooterSubsystem shooter) {
-    
-        m_drive = drive;
-        m_shooter = shooter;
-      
+  
         addCommands(
           // Shoot stored balls
           new HoldShootCommand(shooter,intake).withTimeout(2.5),
@@ -32,10 +23,5 @@
           // Drive over ramp 
           drive.driveForwardMeters(1)
         );
-    
-        //Telemetry
-        autoTab.addDouble("AutoDistance (m)", m_drive::getDistanceMeters);
-        autoTab.addBoolean("Shooter at speed", m_shooter::atSpeed);
-      }
-
+    }
   }

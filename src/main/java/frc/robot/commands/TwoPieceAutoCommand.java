@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveSubsystem;
@@ -16,8 +14,6 @@ public class TwoPieceAutoCommand extends SequentialCommandGroup {
 
     private final DriveSubsystem m_drive;
     private final IntakeSubsystem m_intake;
-    private final ShooterSubsystem m_shooter;
-    private final ShuffleboardTab autoTab = Shuffleboard.getTab("Auto");
 
     public TwoPieceAutoCommand(
             DriveSubsystem drive,
@@ -26,7 +22,6 @@ public class TwoPieceAutoCommand extends SequentialCommandGroup {
         
         m_drive = drive;
         m_intake = intake;
-        m_shooter = shooter;
         
         addCommands(
             // Shoot stored balls
@@ -53,9 +48,5 @@ public class TwoPieceAutoCommand extends SequentialCommandGroup {
             // Shoot any balls picked up
             new HoldShootCommand(shooter, intake).withTimeout(2.5)
         );
-
-         //telemetry
-        autoTab.addDouble("AutoDistance (m)", m_drive::getDistanceMeters);
-        autoTab.addBoolean("Shooter at speed", m_shooter::atSpeed);
     }
 }
