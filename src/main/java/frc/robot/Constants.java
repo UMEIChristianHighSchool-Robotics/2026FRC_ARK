@@ -177,10 +177,6 @@ public final class Constants {
         this.turnScale=turnScale;
       }
     }
-
-    //auto drive
-    public static final double kxSpeed = 0.5;
-    public static final double kzRotation = 0.0;
   }
 
 }
