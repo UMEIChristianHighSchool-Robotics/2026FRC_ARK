@@ -64,6 +64,9 @@ public class DriveSubsystem extends SubsystemBase {
   // declare a variable called driveScaleChooser and initilaize an instance for selecting desired drive speed/scale/power
   private SendableChooser<Double> driveScaleChooser = new SendableChooser<>();
 
+  //Set default Speed mode
+  private OperatorConstants.SpeedSelect currentSpeed = OperatorConstants.SpeedSelect.DRIVE;
+
   
   @SuppressWarnings("removal")
   public DriveSubsystem() {

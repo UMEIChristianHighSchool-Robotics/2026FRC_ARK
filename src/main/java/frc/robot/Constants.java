@@ -85,12 +85,12 @@ public final class Constants {
       /*Where the intake can be (pivot angles) */
     
                             //Intake deploy position radians
-                            public static final double kUpRadians = 6.2;
-                            public static final double kTravelRadians = 3.75;
-                            public static final double kIntakeRadians = 3.2;
+                            public static final double kUpRadians = 3.45;
+                            public static final double kTravelRadians = 0.7;
+                            public static final double kIntakeRadians = 0.05;
     
       //Zero offset for encoder calibration
-      public static final double kZeroOffset = 0.00;//to find this value put intake in the UP position physically. Print encoder value to dashboard. That value becomes your offset.
+      public static final double kZeroOffset = 3.2;//to find this value put intake in the UP position physically. Print encoder value to dashboard. That value becomes your offset.
     
       //---------------------PID / Feedforward------------------------//
       /*Tuning the pivot motor PID and gravity compensation */
@@ -101,8 +101,8 @@ public final class Constants {
       public static final double kD = 0.08;
     
       //Feedforward for gravity compendation
-      public static final double kSFeedForward = 0.0;
-      public static final double kGFeedForward = 0.55; 
+      public static final double kSFeedForward = 0.5;
+      public static final double kGFeedForward = 0.4; 
       public static final double kVFeedForward = 0.0; 
        
       //PID tolerance (radians)
@@ -112,8 +112,8 @@ public final class Constants {
     
       //Pivot soft limits (radians)
       /*Move the move intake to up/down positions manually, print encoder radians to dashboard, add/subtract 0.1 rad for safety */
-      public static final double kForwardSoftLimit = 6.6; // down
-      public static final double kReverseSoftLimit = 2.0; // up
+      public static final double kForwardSoftLimit = 4; // up
+      public static final double kReverseSoftLimit = 0; // down
       public static final boolean kForwardSoftLimitEnabled = true;//test and confirm limits first
       public static final boolean kReverseSoftLimitEnabled = true;//test and confirm limits first
 
