@@ -81,11 +81,11 @@ public class RobotContainer {
       // Set the options to show up in the Dashboard for selecting auto modes. If you
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
-    autoChooser.setDefaultOption("TeleOp", m_driveCommand);
-    autoChooser.addOption("Mobility Only Auto", m_TaxiOnlyAutoCommand);
+    autoChooser.setDefaultOption("Mobility Only Auto", m_TaxiOnlyAutoCommand);
     //autoChooser.addOption("Score + Mobility Auto", m_TaxiOnlyAutoCommand);
     autoChooser.addOption("Two Piece Auto", m_TwoPieceAutoCommand);
- 
+
+    Shuffleboard.getTab("Auto").add("Auto Chooser", autoChooser); 
   }
 
   private void configureBindings() {
@@ -113,7 +113,7 @@ public class RobotContainer {
   
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return m_driveCommand;
+   return autoChooser.getSelected();
   }
 
   // creates methods which read the joystick values for display on the

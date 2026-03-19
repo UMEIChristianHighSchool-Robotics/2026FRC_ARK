@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -17,14 +16,12 @@ public class TaxiOnlyAutoCommand extends SequentialCommandGroup {
 
     public TaxiOnlyAutoCommand(DriveSubsystem drive) {
         m_drive = drive;
-        addRequirements(drive);
-       
-       
+        
         addCommands(
-            drive.driveForwardMeters(1.0));
+            drive.driveForwardMeters(1.0)
+        );
 
-    //telemetry
-    autoTab.add("Distance (m)", m_drive::getDistanceMeters);
-     
+         //telemetry
+        autoTab.addDouble("Distance (m)", m_drive::getDistanceMeters);
     }
 }
