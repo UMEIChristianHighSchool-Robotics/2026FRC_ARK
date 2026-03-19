@@ -25,7 +25,7 @@ public class SweepAutoCommand extends SequentialCommandGroup {
         
         addCommands(
             // Shoot stored balls
-            new HoldShootCommand(shooter,intake).withTimeout(2.5),
+            new HoldShootCommand(shooter).withTimeout(2.5),
 
             // Drive over ramp
             drive.driveForwardMeters(1.5),
@@ -118,7 +118,7 @@ public class SweepAutoCommand extends SequentialCommandGroup {
              drive.driveForwardMeters(-4),
 
             // Shoot any balls picked up
-            new HoldShootCommand(shooter, intake).withTimeout(2.5)
+            new HoldShootCommand(shooter).withTimeout(2.5)
         );
     }
 }

@@ -8,21 +8,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
+
 
 
 public class HoldShootCommand extends Command {
 
   private final ShooterSubsystem m_shooterSubsystem;
-  private final IntakeSubsystem m_intakeSubsystem;
 
-  public HoldShootCommand(ShooterSubsystem m_shooterSubsystem,
-                      IntakeSubsystem m_intakeSubsystem) {
+  public HoldShootCommand(ShooterSubsystem m_shooterSubsystem) {
 
     this.m_shooterSubsystem = m_shooterSubsystem;
-    this.m_intakeSubsystem = m_intakeSubsystem;
     
-    addRequirements(m_shooterSubsystem,m_intakeSubsystem);
+    addRequirements(m_shooterSubsystem);
   }
 
     @Override
@@ -32,19 +29,11 @@ public class HoldShootCommand extends Command {
 
     @Override
   public void execute() {
-
-    // Only feed when ready
-    if (m_shooterSubsystem.atSpeed()) {
-      m_intakeSubsystem.runRoller(IntakeConstants.kRollerVoltage);
-    } else {
-      m_intakeSubsystem.stopRoller();
-    }
   }
 
    @Override
   public void end(boolean interrupted) {
     m_shooterSubsystem.stop();
-    m_intakeSubsystem.stopRoller();
   }
 
   @Override

@@ -87,7 +87,7 @@ public final class Constants {
                             //Intake deploy position radians
                             public static final double kUpRadians = 3.45;
                             public static final double kTravelRadians = 0.7;
-                            public static final double kIntakeRadians = 0.05;
+                            public static final double kIntakeRadians = 0.0;
     
       //Zero offset for encoder calibration
       public static final double kZeroOffset = 3.2;//to find this value put intake in the UP position physically. Print encoder value to dashboard. That value becomes your offset.
@@ -96,17 +96,17 @@ public final class Constants {
       /*Tuning the pivot motor PID and gravity compensation */
     
       //PID constants
-      public static final double kP = 1.0;
-      public static final double kI = 0.0;
-      public static final double kD = 0.08;
+      public static final double kP = 2.2; //proportional how far from the target
+      public static final double kI = 0.0; //how long have I been wrong
+      public static final double kD = 0.08; //how fast is the error changing
     
       //Feedforward for gravity compendation
-      public static final double kSFeedForward = 0.5;
-      public static final double kGFeedForward = 0.4; 
-      public static final double kVFeedForward = 0.0; 
+      public static final double kSFeedForward = 0.30; //voltage to get moving
+      public static final double kGFeedForward = 0.48; //voltage to hold arm up; lower for jerky movements
+      public static final double kVFeedForward = 0.0; //voltage for speed
        
       //PID tolerance (radians)
-      public static final double kDeployTolerance = 0.1;
+      public static final double kDeployTolerance = 0.05;
 
       //---------------------Software limits------------------------//
     

@@ -135,7 +135,6 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeTab.add("FWD Soft Limit",IntakeConstants.kForwardSoftLimit);
     intakeTab.add("REV Soft Limit",IntakeConstants.kReverseSoftLimit);
 
-    intakeTab.addDouble("PID Output", () -> deployPID.calculate(getAngleRadians(), currentState.radians));
     intakeTab.addDouble("Angle Error", () -> currentState.radians - getAngleRadians());
 
     intakeTab.addDouble("Deploy Angle (rad)", this::getAngleRadians);
@@ -192,12 +191,12 @@ public class IntakeSubsystem extends SubsystemBase {
     double targetAngle = currentState.radians;
 
     double pidOutput = deployPID.calculate(currentAngle, targetAngle); //calculates correction voltage to reach target
-    double ff = feedforward.calculate(targetAngle, 0);//feedforward for gravity compensation
+    double ff = feedforward.calculate(currentAngle, 0.0);//feedforward for gravity compensation
     double outputVolts = pidOutput + ff;
 
     // Minimum movement boost
-    if (Math.abs(pidOutput) > 0.02) {
-    outputVolts += Math.copySign(0.6, pidOutput);
+    if (Math.abs(targetAngle-currentAngle) > 0.08) {
+    outputVolts += Math.copySign(0.35, pidOutput);
     }
 
 outputVolts = MathUtil.clamp(outputVolts, -12.0, 12.0);
@@ -210,8 +209,10 @@ outputVolts = MathUtil.clamp(outputVolts, -12.0, 12.0);
     
     // Only apply voltage when robot is enabled
     if (DriverStation.isEnabled()) {
-        intakeDeployMotor.setVoltage(outputVolts);
-    }
+    intakeDeployMotor.setVoltage(outputVolts);
+} else {
+    intakeDeployMotor.stopMotor();
+}
   }    
    
 }

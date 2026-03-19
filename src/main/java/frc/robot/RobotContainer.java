@@ -51,7 +51,7 @@ public class RobotContainer {
   public final IntakeDownCommand m_intakeDownCommand = new IntakeDownCommand(m_intakeSubsystem);
   public final IntakeUpCommand m_intakeUpCommand = new IntakeUpCommand(m_intakeSubsystem);
   public final IntakeTravelCommand m_intakeTravelCommand = new IntakeTravelCommand(m_intakeSubsystem);
-  public final HoldShootCommand m_shootCommand = new HoldShootCommand(m_shooterSubsystem, m_intakeSubsystem);
+  public final HoldShootCommand m_shootCommand = new HoldShootCommand(m_shooterSubsystem);
   public final ShooterIdleCommand m_shooterIdleCommand = new ShooterIdleCommand(m_shooterSubsystem);
   
   public RobotContainer() {
@@ -101,7 +101,7 @@ public class RobotContainer {
   
     //Right trigger: shoot
     m_controller.rightTrigger()
-    .whileTrue(new HoldShootCommand(m_shooterSubsystem, m_intakeSubsystem));
+    .whileTrue(new HoldShootCommand(m_shooterSubsystem));
   
    }
 
