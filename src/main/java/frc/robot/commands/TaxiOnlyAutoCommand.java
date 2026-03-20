@@ -9,10 +9,7 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class TaxiOnlyAutoCommand extends SequentialCommandGroup {
 
-    private final DriveSubsystem m_drive;
-
     public TaxiOnlyAutoCommand(DriveSubsystem drive) {
-        m_drive = drive;
         
         addCommands(
             drive.driveForwardMeters(1.0)

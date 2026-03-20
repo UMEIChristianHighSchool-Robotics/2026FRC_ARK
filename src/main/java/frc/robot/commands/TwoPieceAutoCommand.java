@@ -12,17 +12,13 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class TwoPieceAutoCommand extends SequentialCommandGroup {
 
-    private final DriveSubsystem m_drive;
-    private final IntakeSubsystem m_intake;
 
     public TwoPieceAutoCommand(
             DriveSubsystem drive,
             IntakeSubsystem intake,
             ShooterSubsystem shooter) {
         
-        m_drive = drive;
-        m_intake = intake;
-        
+      
         addCommands(
             // Shoot stored balls
             new HoldShootCommand(shooter).withTimeout(2.5),
@@ -35,8 +31,8 @@ public class TwoPieceAutoCommand extends SequentialCommandGroup {
 
             // Drive forward while running intake roller
             new ParallelDeadlineGroup(
-                m_drive.driveForwardMeters(1.5),
-                new RunIntakeRollerCommand(m_intake)
+                drive.driveForwardMeters(1.5),
+                new RunIntakeRollerCommand(intake)
             ),
 
             //Move intake to UP

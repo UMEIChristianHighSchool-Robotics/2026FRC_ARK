@@ -15,6 +15,7 @@ import frc.robot.commands.TaxiShootAutoCommand;
 import frc.robot.commands.TwoPieceAutoCommand;
 import frc.robot.commands.SweepAutoCommand;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.DeployAndRunIntakeCommand;
 import frc.robot.commands.HoldShootCommand;
 import frc.robot.commands.IntakeDownCommand;
 import frc.robot.commands.IntakeTravelCommand;
@@ -53,7 +54,8 @@ public class RobotContainer {
   public final IntakeTravelCommand m_intakeTravelCommand = new IntakeTravelCommand(m_intakeSubsystem);
   public final HoldShootCommand m_shootCommand = new HoldShootCommand(m_shooterSubsystem);
   public final ShooterIdleCommand m_shooterIdleCommand = new ShooterIdleCommand(m_shooterSubsystem);
-  
+  public final DeployAndRunIntakeCommand m_DeployAndRunIntakeCommand = new DeployAndRunIntakeCommand(m_intakeSubsystem);
+
   public RobotContainer() {
     
     // Set default subsystem commands in the constructor
@@ -94,9 +96,9 @@ public class RobotContainer {
     m_controller.y().onTrue(new IntakeUpCommand(m_intakeSubsystem));
 
     //Left trigger: intake roller
-    m_controller.leftTrigger().whileTrue(new RunIntakeRollerCommand(m_intakeSubsystem));
+    m_controller.leftTrigger().whileTrue(new DeployAndRunIntakeCommand(m_intakeSubsystem));
     
-    //Left bumber: reverse intake roller to clear jams 
+    //Left bumper: reverse intake roller to clear jams 
     m_controller.leftBumper().whileTrue(new ReverseIntakeRollerCommand(m_intakeSubsystem));
   
     //Right trigger: shoot
