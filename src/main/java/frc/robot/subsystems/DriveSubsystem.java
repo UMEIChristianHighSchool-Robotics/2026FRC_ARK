@@ -163,6 +163,8 @@ public void setDriveScales(double forward, double turn) {
 // Set the current speed mode
 public void setSpeedMode(OperatorConstants.SpeedSelect speed) {
     currentSpeed = speed;
+    forwardScale = speed.driveScale;
+    turnScale = speed.turnScale;
 }
 
 /** Sets left and right motor power directly for tank drive */

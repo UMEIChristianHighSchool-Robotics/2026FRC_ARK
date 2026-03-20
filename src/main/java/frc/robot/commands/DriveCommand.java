@@ -47,25 +47,20 @@ public class DriveCommand extends Command {
     
     @Override
     public void execute() {
-           
-         // Arcade drive
-        double forwardPower = MathUtil.applyDeadband(m_controller.getLeftY(), OperatorConstants.kDeadband) * m_drive.getForwardScale();
-        double turnPower = MathUtil.applyDeadband(m_controller.getLeftX(), OperatorConstants.kDeadband) * m_drive.getTurnScale();
-        m_drive.setArcadePower(forwardPower, turnPower);
-
-
-        // Optional: Tank drive
-        double leftPower = -MathUtil.applyDeadband(m_controller.getLeftY(), OperatorConstants.kDeadband) * m_drive.getForwardScale();
-        double rightPower = -MathUtil.applyDeadband(m_controller.getRightY(), OperatorConstants.kDeadband) * m_drive.getForwardScale();
-
         String driveMode = driveChooser.getSelected();
+
         if (driveMode == null) driveMode = "Arcade Drive";
 
         if (driveMode.equals("Arcade Drive")) {
-            m_drive.setArcadePower(forwardPower, turnPower);
-            } else {
-            m_drive.setTankPower(leftPower, rightPower);
-            }
+            double forward = MathUtil.applyDeadband(m_controller.getLeftY(), OperatorConstants.kDeadband) * m_drive.getForwardScale();
+            double turn = MathUtil.applyDeadband(m_controller.getLeftX(), OperatorConstants.kDeadband) * m_drive.getTurnScale();
+            m_drive.setArcadePower(forward, turn);
+        } else {
+            double left = MathUtil.applyDeadband(m_controller.getLeftY(), OperatorConstants.kDeadband) * m_drive.getForwardScale();
+            double right = MathUtil.applyDeadband(m_controller.getRightY(), OperatorConstants.kDeadband) * m_drive.getForwardScale();
+            m_drive.setTankPower(left, right);
+        }
+
     }
 
     // called once the command ends or is interrupted
