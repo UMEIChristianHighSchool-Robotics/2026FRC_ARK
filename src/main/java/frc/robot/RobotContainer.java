@@ -90,6 +90,9 @@ public class RobotContainer {
 
   private void configureBindings() {
     
+    //Set default TeleOp speed mode to Drive
+    m_driveSubsystem.setSpeedMode(OperatorConstants.SpeedSelect.DRIVE);
+
     //------------Driver Controller------------//
     //D-Pad Speed Selector
     m_driverController.povUp().onTrue(new InstantCommand(() -> m_driveSubsystem.setSpeedMode(OperatorConstants.SpeedSelect.FAST)));

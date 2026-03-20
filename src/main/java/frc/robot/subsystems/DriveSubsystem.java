@@ -60,9 +60,8 @@ public class DriveSubsystem extends SubsystemBase {
   private ShuffleboardTab driveTab= Shuffleboard.getTab("Drive");
   private ShuffleboardTab autoTab= Shuffleboard.getTab("Auto");
 
-  //Set default Speed mode
-  private OperatorConstants.SpeedSelect currentSpeed = OperatorConstants.SpeedSelect.DRIVE;
-
+  //Set default Speed mode to slow for Auto commands
+  private OperatorConstants.SpeedSelect currentSpeed = OperatorConstants.SpeedSelect.SLOW;
   
   @SuppressWarnings("removal")
   public DriveSubsystem() {
