@@ -13,7 +13,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -60,9 +59,6 @@ public class DriveSubsystem extends SubsystemBase {
   //Create a tab in Shuffleboard
   private ShuffleboardTab driveTab= Shuffleboard.getTab("Drive");
   private ShuffleboardTab autoTab= Shuffleboard.getTab("Auto");
-
-  // declare a variable called driveScaleChooser and initilaize an instance for selecting desired drive speed/scale/power
-  private SendableChooser<Double> driveScaleChooser = new SendableChooser<>();
 
   //Set default Speed mode
   private OperatorConstants.SpeedSelect currentSpeed = OperatorConstants.SpeedSelect.DRIVE;
@@ -122,32 +118,30 @@ public class DriveSubsystem extends SubsystemBase {
 
     m_drive.setSafetyEnabled(true);
     
- 
-    // list drive scale/power/speed options for Shuffleboard
-    driveScaleChooser.addOption("100%", 1.0);
-    driveScaleChooser.setDefaultOption("75%", 0.75);
-    driveScaleChooser.addOption("50%", 0.5);
-    driveScaleChooser.addOption("25%", 0.25);
-
     // Telemetry
-    driveTab.add("Drivetrain Speed", driveScaleChooser);
     driveTab.addDouble("Left Encoder",()-> leftEncoder.getPosition());
     driveTab.addDouble("Right Encoder",()-> rightEncoder.getPosition());
     driveTab.addDouble("Distance (m)", this::getDistanceMeters);
+    driveTab.addString("Current Speed Mode", () -> currentSpeed.name());
     autoTab.addDouble("Distance (m)", this::getDistanceMeters);
-
-}
-
-public double getDriveScale() {
-    if (driveScaleChooser.getSelected() != null) {
-        return driveScaleChooser.getSelected();
-    } else {
-        return 1.0; // default scale if nothing selected
-    }
 }
 
 public double getDistanceMeters() {
     return (leftEncoder.getPosition() + rightEncoder.getPosition()) / 2.0;
+}
+
+// Set the current speed mode
+public void setSpeedMode(OperatorConstants.SpeedSelect speed) {
+    currentSpeed = speed;
+}
+
+// Get the current drive and turn scale
+public double getDriveScale() {
+    return currentSpeed.driveScale;
+}
+
+public double getTurnScale() {
+    return currentSpeed.turnScale;
 }
 
 /** Sets left and right motor power directly for tank drive */
@@ -165,24 +159,27 @@ public void resetEncoders(){
   rightEncoder.setPosition(0);
 }
 
- 
+ // Tank drive command with scaling
 public Command DriveCommand(DoubleSupplier left, DoubleSupplier right) {
-  return run(() -> {
-    double scale = driveScaleChooser.getSelected();
-
-    m_drive.tankDrive(
-        MathUtil.applyDeadband(left.getAsDouble(), OperatorConstants.kDeadband) * scale,
-        MathUtil.applyDeadband(right.getAsDouble(), OperatorConstants.kDeadband) * scale
-    );
-  });
+    return run(() -> {
+        double leftInput = MathUtil.applyDeadband(left.getAsDouble(), OperatorConstants.kDeadband) * getDriveScale();
+        double rightInput = MathUtil.applyDeadband(right.getAsDouble(), OperatorConstants.kDeadband) * getDriveScale();
+        m_drive.tankDrive(leftInput, rightInput);
+    });
 }
 
-  public Command arcadeDrive(DoubleSupplier xSpeed, DoubleSupplier zRotation)
-  {
-    return run(() -> m_drive.arcadeDrive(xSpeed.getAsDouble(), zRotation.getAsDouble()));
-  }
+// Arcade drive command with scaling
+public Command arcadeDrive(DoubleSupplier xSpeed, DoubleSupplier zRotation) {
+    return run(() -> {
+        double forward = MathUtil.applyDeadband(xSpeed.getAsDouble(), OperatorConstants.kDeadband) * getDriveScale();
+        double turn = MathUtil.applyDeadband(zRotation.getAsDouble(), OperatorConstants.kDeadband) * getTurnScale();
+        m_drive.arcadeDrive(forward, turn);
+    });
+}
 
-  //method to return drive forward command for autonomous sequence use
+// 
+
+//method to return drive forward command for autonomous sequence use
   public Command driveForwardMeters(double meters) {
     SlewRateLimiter distanceLimiter = new SlewRateLimiter(DriveConstants.kDistanceSlewRateLimit); // optional
 

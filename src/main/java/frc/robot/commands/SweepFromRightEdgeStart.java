@@ -10,12 +10,12 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class SweepAutoCommand extends SequentialCommandGroup {
+public class SweepFromRightEdgeStart extends SequentialCommandGroup {
 
     private final DriveSubsystem m_drive;
     private final IntakeSubsystem m_intake;
 
-    public SweepAutoCommand(
+    public SweepFromRightEdgeStart(
             DriveSubsystem drive,
             IntakeSubsystem intake,
             ShooterSubsystem shooter) {

@@ -16,7 +16,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.TaxiOnlyAutoCommand;
 import frc.robot.commands.TaxiShootAutoCommand;
 import frc.robot.commands.TwoPieceAutoCommand;
-import frc.robot.commands.SweepAutoCommand;
+import frc.robot.commands.SweepFromRightEdgeStart;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.HoldShootCommand;
 import frc.robot.commands.IntakeDownCommand;
@@ -49,7 +49,7 @@ public class RobotContainer {
   public final TaxiOnlyAutoCommand m_TaxiOnlyAutoCommand = new TaxiOnlyAutoCommand(m_driveSubsystem);
   public final TaxiShootAutoCommand m_TaxiShootAutoCommand = new TaxiShootAutoCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
   public final TwoPieceAutoCommand m_TwoPieceAutoCommand = new TwoPieceAutoCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
-  public final SweepAutoCommand m_SweepAutoCommand = new SweepAutoCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
+  public final SweepFromRightEdgeStart m_SweepFromRightEdgeStart = new SweepFromRightEdgeStart(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
   public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_driverController);
   public final RunIntakeRollerCommand m_runIntakeRollerCommand = new RunIntakeRollerCommand(m_intakeSubsystem);
   public final ReverseIntakeRollerCommand m_reverseIntakeRollerCommand = new ReverseIntakeRollerCommand(m_intakeSubsystem);
@@ -82,7 +82,7 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Mobility Only Auto", m_TaxiOnlyAutoCommand);
     autoChooser.addOption("Score + Mobility Auto", m_TaxiOnlyAutoCommand);
     autoChooser.addOption("Two Piece Auto", m_TwoPieceAutoCommand);
-    autoChooser.addOption("Two Piece + Sweep Auto", m_SweepAutoCommand);
+    autoChooser.addOption("Two Piece + Sweep Auto", m_SweepFromRightEdgeStart);
 
     Shuffleboard.getTab("Auto").add("Auto Chooser", autoChooser); 
     
@@ -91,7 +91,11 @@ public class RobotContainer {
   private void configureBindings() {
     
     //------------Driver Controller------------//
-   
+    //D-Pad Speed Selector
+    m_driverController.povUp().onTrue(new InstantCommand(() -> m_driveSubsystem.setSpeedMode(OperatorConstants.SpeedSelect.FAST)));
+    m_driverController.povRight().onTrue(new InstantCommand(() -> m_driveSubsystem.setSpeedMode(OperatorConstants.SpeedSelect.DRIVE)));
+    m_driverController.povDown().onTrue(new InstantCommand(() -> m_driveSubsystem.setSpeedMode(OperatorConstants.SpeedSelect.SLOW)));
+    m_driverController.povLeft().onTrue(new InstantCommand(() -> m_driveSubsystem.setSpeedMode(OperatorConstants.SpeedSelect.CRAWL)));
 
     //Left Trigger: Deploy and run intake roller
     m_driverController.leftTrigger()
@@ -111,28 +115,17 @@ public class RobotContainer {
 
 
     //------------Operator Controller------------//
-    //A button: Intake DOWN
-    m_operatorController.a().onTrue(new IntakeDownCommand(m_intakeSubsystem));
+    //Intake Positions
+    m_operatorController.a().onTrue(new IntakeDownCommand(m_intakeSubsystem)); //A is "Down"
+    m_operatorController.b().onTrue(new IntakeTravelCommand(m_intakeSubsystem)); //B is "Travel"
+    m_operatorController.y().onTrue(new IntakeUpCommand(m_intakeSubsystem)); //Y is "Up"
 
-    //B button: Intake TRAVEL
-    m_operatorController.b().onTrue(new IntakeTravelCommand(m_intakeSubsystem));
-
-    //Y button: Intake UP
-    m_operatorController.y().onTrue(new IntakeUpCommand(m_intakeSubsystem));
-
-    //Left trigger: Forward intake roller
-    m_operatorController.leftTrigger().whileTrue(new RunIntakeRollerCommand(m_intakeSubsystem));
-    
-    //Left bumper: Reverse intake roller to clear jams 
-    m_operatorController.leftBumper().whileTrue(new ReverseIntakeRollerCommand(m_intakeSubsystem));
-  
-    //Right trigger: shoot
-    m_operatorController.rightTrigger()
-    .whileTrue(new HoldShootCommand(m_shooterSubsystem));
+    //Intake Rollers
+    m_operatorController.rightTrigger().whileTrue(new RunIntakeRollerCommand(m_intakeSubsystem)); //Right: Forward
+    m_operatorController.leftTrigger().whileTrue(new ReverseIntakeRollerCommand(m_intakeSubsystem)); //Left: Reverse
   
    }
 
-  
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
    return autoChooser.getSelected();
