@@ -47,29 +47,27 @@ public class DriveCommand extends Command {
     
     @Override
     public void execute() {
-        double scale = m_drive.getDriveScale(); // get drive scale from Shuffleboard
-        
+           
          // Arcade drive
-        double turnPower = -MathUtil.applyDeadband(m_controller.getLeftX(), OperatorConstants.kDeadband) * scale;
+        double forwardPower = MathUtil.applyDeadband(m_controller.getLeftY(), OperatorConstants.kDeadband) * m_drive.getForwardScale();
+        double turnPower = MathUtil.applyDeadband(m_controller.getLeftX(), OperatorConstants.kDeadband) * m_drive.getTurnScale();
+        m_drive.setArcadePower(forwardPower, turnPower);
 
 
         // Optional: Tank drive
-        double leftPower = -MathUtil.applyDeadband(m_controller.getLeftY(), OperatorConstants.kDeadband) * scale;
-        double rightPower = -MathUtil.applyDeadband(m_controller.getRightY(), OperatorConstants.kDeadband) * scale;
+        double leftPower = -MathUtil.applyDeadband(m_controller.getLeftY(), OperatorConstants.kDeadband) * m_drive.getForwardScale();
+        double rightPower = -MathUtil.applyDeadband(m_controller.getRightY(), OperatorConstants.kDeadband) * m_drive.getForwardScale();
 
-       
         String driveMode = driveChooser.getSelected();
         if (driveMode == null) driveMode = "Arcade Drive";
 
         if (driveMode.equals("Arcade Drive")) {
-            m_drive.setArcadePower(leftPower, turnPower);
+            m_drive.setArcadePower(forwardPower, turnPower);
             } else {
             m_drive.setTankPower(leftPower, rightPower);
             }
     }
 
-
-    
     // called once the command ends or is interrupted
     @Override
     public void end(final boolean interrupted) {

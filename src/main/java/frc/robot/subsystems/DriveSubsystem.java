@@ -28,11 +28,11 @@ public class DriveSubsystem extends SubsystemBase {
   private SparkMax rightLeader = new SparkMax(DriveConstants.kRightLeaderCANID, MotorType.kBrushless);
   private SparkMax rightFollower = new SparkMax(DriveConstants.kRightFollowerCANID, MotorType.kBrushless);
 
-  //Encoders
+  //Declare Encoders
   private RelativeEncoder leftEncoder;
   private RelativeEncoder rightEncoder;
 
-  //Distance PID Controller
+  //Declare and Initialize Distance PID Controller
   private PIDController distancePID =
     new PIDController(
       DriveConstants.kDistanceP,
@@ -40,7 +40,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kDistanceD
     );
   
-  //Turn PID Controller
+  //Declare and Initialize Turn PID Controller
    private PIDController turnPID =
     new PIDController(
       DriveConstants.kTurnP,
@@ -48,27 +48,37 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kTurnD
     );
 
-  //Declare configurations
+  //Declare and Initialize motor controller configurations
   private SparkMaxConfig leftLeaderConfig = new SparkMaxConfig();
   private SparkMaxConfig rightLeaderConfig = new SparkMaxConfig();
   private SparkMaxConfig rightFollowerConfig = new SparkMaxConfig();
   private SparkMaxConfig leftFollowerConfig = new SparkMaxConfig();
 
+  //Declare and Initialize DifferentialDrive system
   private final DifferentialDrive m_drive = new DifferentialDrive(leftLeader,rightLeader);
+  
+     
+   //Set default Speed Mode to Drive
+  private OperatorConstants.SpeedSelect currentSpeed = OperatorConstants.SpeedSelect.DRIVE;
+  
+  // --- Forward and turn scaling (fields, accessible by commands) --- 
+  private double forwardScale = currentSpeed.driveScale;
+  private double turnScale = currentSpeed.turnScale;
 
-  //Create a tab in Shuffleboard
+   //Create tabs in Shuffleboard
   private ShuffleboardTab driveTab= Shuffleboard.getTab("Drive");
   private ShuffleboardTab autoTab= Shuffleboard.getTab("Auto");
 
-  //Set default Speed mode to slow for Auto commands
-  private OperatorConstants.SpeedSelect currentSpeed = OperatorConstants.SpeedSelect.SLOW;
-  
-  @SuppressWarnings("removal")
+
+
+  @SuppressWarnings("removal") //for the required API call that is scheduled for removal in 2027
+
+
   public DriveSubsystem() {
-    //pull in the built-in encoders & closed loop control inside the constructor
+    
     leftEncoder = leftLeader.getEncoder();
     rightEncoder = rightLeader.getEncoder();
-
+   
     //Configure motor controllers inside the constructor
         
     leftLeaderConfig  
@@ -129,18 +139,30 @@ public double getDistanceMeters() {
     return (leftEncoder.getPosition() + rightEncoder.getPosition()) / 2.0;
 }
 
-// Set the current speed mode
-public void setSpeedMode(OperatorConstants.SpeedSelect speed) {
-    currentSpeed = speed;
-}
-
-// Get the current drive and turn scale
-public double getDriveScale() {
-    return currentSpeed.driveScale;
+public double getForwardScale() {
+    return forwardScale;
 }
 
 public double getTurnScale() {
-    return currentSpeed.turnScale;
+    return turnScale;
+}
+
+public void setForwardScale(double scale) {
+    forwardScale = scale;
+}
+
+public void setTurnScale(double scale) {
+    turnScale = scale;
+}
+
+public void setDriveScales(double forward, double turn) {
+    forwardScale = forward;
+    turnScale = turn;
+}
+
+// Set the current speed mode
+public void setSpeedMode(OperatorConstants.SpeedSelect speed) {
+    currentSpeed = speed;
 }
 
 /** Sets left and right motor power directly for tank drive */
@@ -161,8 +183,8 @@ public void resetEncoders(){
  // Tank drive command with scaling
 public Command DriveCommand(DoubleSupplier left, DoubleSupplier right) {
     return run(() -> {
-        double leftInput = MathUtil.applyDeadband(left.getAsDouble(), OperatorConstants.kDeadband) * getDriveScale();
-        double rightInput = MathUtil.applyDeadband(right.getAsDouble(), OperatorConstants.kDeadband) * getDriveScale();
+        double leftInput = MathUtil.applyDeadband(left.getAsDouble(), OperatorConstants.kDeadband) * getForwardScale();
+        double rightInput = MathUtil.applyDeadband(right.getAsDouble(), OperatorConstants.kDeadband) * getTurnScale();
         m_drive.tankDrive(leftInput, rightInput);
     });
 }
@@ -170,7 +192,7 @@ public Command DriveCommand(DoubleSupplier left, DoubleSupplier right) {
 // Arcade drive command with scaling
 public Command arcadeDrive(DoubleSupplier xSpeed, DoubleSupplier zRotation) {
     return run(() -> {
-        double forward = MathUtil.applyDeadband(xSpeed.getAsDouble(), OperatorConstants.kDeadband) * getDriveScale();
+        double forward = MathUtil.applyDeadband(xSpeed.getAsDouble(), OperatorConstants.kDeadband) * getForwardScale();
         double turn = MathUtil.applyDeadband(zRotation.getAsDouble(), OperatorConstants.kDeadband) * getTurnScale();
         m_drive.arcadeDrive(forward, turn);
     });

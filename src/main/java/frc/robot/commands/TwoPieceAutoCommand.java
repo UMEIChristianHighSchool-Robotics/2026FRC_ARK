@@ -21,28 +21,33 @@ public class TwoPieceAutoCommand extends SequentialCommandGroup {
       
         addCommands(
             // Shoot stored balls
-            new HoldShootCommand(shooter).withTimeout(2.5),
+            new HoldShootCommand(shooter).withTimeout(0.8),
 
-            // Drive over ramp
-            drive.driveForwardMeters(1.5),
-
-            // Move intake to DOWN
-            new IntakeDownCommand(intake),
-
+            //Deploy intake while driving
+            new ParallelDeadlineGroup(
+                drive.driveForwardMeters(3),
+                new IntakeDownCommand(intake)
+            ),
+            
             // Drive forward while running intake roller
             new ParallelDeadlineGroup(
                 drive.driveForwardMeters(1.5),
                 new RunIntakeRollerCommand(intake)
             ),
 
-            //Move intake to UP
-            new IntakeUpCommand(intake),
+            // Shoot while lifting intake
+            new ParallelDeadlineGroup(
+                new HoldShootCommand(shooter).withTimeout(1.5),
+                new IntakeUpCommand(intake)
+            ),
 
-            //Reverse
-             drive.driveForwardMeters(-1.5),
+            //Reposition for TeleOp
+            new ParallelDeadlineGroup(
+                drive.turnRelative(-90),    
+                new IntakeDownCommand(intake),
+                new RunIntakeRollerCommand(intake)
+            )
 
-            // Shoot any balls picked up
-            new HoldShootCommand(shooter).withTimeout(2.5)
         );
     }
 }

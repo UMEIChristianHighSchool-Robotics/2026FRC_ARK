@@ -16,7 +16,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.TaxiOnlyAutoCommand;
 import frc.robot.commands.TaxiShootAutoCommand;
 import frc.robot.commands.TwoPieceAutoCommand;
-import frc.robot.commands.SweepFromRightEdgeStart;
+import frc.robot.commands.SweepFromLeftEdgeStart;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.HoldShootCommand;
 import frc.robot.commands.IntakeDownCommand;
@@ -25,6 +25,7 @@ import frc.robot.commands.IntakeUpCommand;
 import frc.robot.commands.ReverseIntakeRollerCommand;
 import frc.robot.commands.RunIntakeRollerCommand;
 import frc.robot.commands.ShooterIdleCommand;
+import frc.robot.commands.SetDriveScaleCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -49,7 +50,8 @@ public class RobotContainer {
   public final TaxiOnlyAutoCommand m_TaxiOnlyAutoCommand = new TaxiOnlyAutoCommand(m_driveSubsystem);
   public final TaxiShootAutoCommand m_TaxiShootAutoCommand = new TaxiShootAutoCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
   public final TwoPieceAutoCommand m_TwoPieceAutoCommand = new TwoPieceAutoCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
-  public final SweepFromRightEdgeStart m_SweepFromRightEdgeStart = new SweepFromRightEdgeStart(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
+  public final SweepFromLeftEdgeStart m_SweepFromLeftEdgeStart = new SweepFromLeftEdgeStart(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
+  public final SetDriveScaleCommand m_SetDriveScaleCommand = new SetDriveScaleCommand(m_driveSubsystem, 0, 0);
   public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_driverController);
   public final RunIntakeRollerCommand m_runIntakeRollerCommand = new RunIntakeRollerCommand(m_intakeSubsystem);
   public final ReverseIntakeRollerCommand m_reverseIntakeRollerCommand = new ReverseIntakeRollerCommand(m_intakeSubsystem);
@@ -82,7 +84,7 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Mobility Only Auto", m_TaxiOnlyAutoCommand);
     autoChooser.addOption("Score + Mobility Auto", m_TaxiOnlyAutoCommand);
     autoChooser.addOption("Two Piece Auto", m_TwoPieceAutoCommand);
-    autoChooser.addOption("Two Piece + Sweep Auto", m_SweepFromRightEdgeStart);
+    autoChooser.addOption("Left Aligned Sweep Auto", m_SweepFromLeftEdgeStart);
 
     Shuffleboard.getTab("Auto").add("Auto Chooser", autoChooser); 
     
@@ -90,9 +92,6 @@ public class RobotContainer {
 
   private void configureBindings() {
     
-    //Set default TeleOp speed mode to Drive
-    m_driveSubsystem.setSpeedMode(OperatorConstants.SpeedSelect.DRIVE);
-
     //------------Driver Controller------------//
     //D-Pad Speed Selector
     m_driverController.povUp().onTrue(new InstantCommand(() -> m_driveSubsystem.setSpeedMode(OperatorConstants.SpeedSelect.FAST)));

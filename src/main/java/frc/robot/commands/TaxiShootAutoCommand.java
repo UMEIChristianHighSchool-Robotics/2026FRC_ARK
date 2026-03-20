@@ -17,11 +17,13 @@
         ShooterSubsystem shooter) {
   
         addCommands(
-          // Shoot stored balls
-          new HoldShootCommand(shooter).withTimeout(2.5),
-
+          
           // Drive over ramp 
-          drive.driveForwardMeters(1)
+          drive.driveForwardMeters(2),
+
+          // Shoot stored balls
+          new HoldShootCommand(shooter).withTimeout(2.5)
+
         );
     }
   }
