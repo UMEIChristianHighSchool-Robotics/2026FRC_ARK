@@ -35,8 +35,10 @@ public class RobotContainer {
   public final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   public final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   
-  //Xbox Controller
-  public final CommandXboxController m_controller = new CommandXboxController(OperatorConstants.kControllerPort);
+  //Xbox Controllers
+  public final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  public final CommandXboxController m_operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+
 
   //The autonomous chooser
   public final SendableChooser<Command> autoChooser = new SendableChooser<>();
