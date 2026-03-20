@@ -7,6 +7,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OperatorConstants;
@@ -15,7 +18,6 @@ import frc.robot.commands.TaxiShootAutoCommand;
 import frc.robot.commands.TwoPieceAutoCommand;
 import frc.robot.commands.SweepAutoCommand;
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.DeployAndRunIntakeCommand;
 import frc.robot.commands.HoldShootCommand;
 import frc.robot.commands.IntakeDownCommand;
 import frc.robot.commands.IntakeTravelCommand;
@@ -48,7 +50,7 @@ public class RobotContainer {
   public final TaxiShootAutoCommand m_TaxiShootAutoCommand = new TaxiShootAutoCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
   public final TwoPieceAutoCommand m_TwoPieceAutoCommand = new TwoPieceAutoCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
   public final SweepAutoCommand m_SweepAutoCommand = new SweepAutoCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
-  public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_controller);
+  public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_driverController);
   public final RunIntakeRollerCommand m_runIntakeRollerCommand = new RunIntakeRollerCommand(m_intakeSubsystem);
   public final ReverseIntakeRollerCommand m_reverseIntakeRollerCommand = new ReverseIntakeRollerCommand(m_intakeSubsystem);
   public final IntakeDownCommand m_intakeDownCommand = new IntakeDownCommand(m_intakeSubsystem);
@@ -56,8 +58,7 @@ public class RobotContainer {
   public final IntakeTravelCommand m_intakeTravelCommand = new IntakeTravelCommand(m_intakeSubsystem);
   public final HoldShootCommand m_shootCommand = new HoldShootCommand(m_shooterSubsystem);
   public final ShooterIdleCommand m_shooterIdleCommand = new ShooterIdleCommand(m_shooterSubsystem);
-  public final DeployAndRunIntakeCommand m_DeployAndRunIntakeCommand = new DeployAndRunIntakeCommand(m_intakeSubsystem);
-
+  
   public RobotContainer() {
     
     // Set default subsystem commands in the constructor
@@ -88,23 +89,45 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    
+    //------------Driver Controller------------//
+   
+
+    //Left Trigger: Deploy and run intake roller
+    m_driverController.leftTrigger()
+      .whileTrue(
+        new ParallelCommandGroup(
+          new IntakeDownCommand(m_intakeSubsystem),
+          new RunIntakeRollerCommand(m_intakeSubsystem)
+        ))
+      .onFalse(new IntakeTravelCommand(m_intakeSubsystem));
+
+    //Right trigger: shoot
+    m_driverController.rightTrigger()
+    .whileTrue(new HoldShootCommand(m_shooterSubsystem));
+  
+    //A button: STOP everything
+    m_driverController.a().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()));
+
+
+    //------------Operator Controller------------//
     //A button: Intake DOWN
-    m_controller.a().onTrue(new IntakeDownCommand(m_intakeSubsystem));
+    m_operatorController.a().onTrue(new IntakeDownCommand(m_intakeSubsystem));
 
     //B button: Intake TRAVEL
-    m_controller.b().onTrue(new IntakeTravelCommand(m_intakeSubsystem));
+    m_operatorController.b().onTrue(new IntakeTravelCommand(m_intakeSubsystem));
 
     //Y button: Intake UP
-    m_controller.y().onTrue(new IntakeUpCommand(m_intakeSubsystem));
+    m_operatorController.y().onTrue(new IntakeUpCommand(m_intakeSubsystem));
 
-    //Left trigger: intake roller
-    m_controller.leftTrigger().whileTrue(new DeployAndRunIntakeCommand(m_intakeSubsystem));
+    //Left trigger: Forward intake roller
+    m_operatorController.leftTrigger().whileTrue(new RunIntakeRollerCommand(m_intakeSubsystem));
     
-    //Left bumper: reverse intake roller to clear jams 
-    m_controller.leftBumper().whileTrue(new ReverseIntakeRollerCommand(m_intakeSubsystem));
+    //Left bumper: Reverse intake roller to clear jams 
+    m_operatorController.leftBumper().whileTrue(new ReverseIntakeRollerCommand(m_intakeSubsystem));
   
     //Right trigger: shoot
-    m_controller.rightTrigger()
+    m_operatorController.rightTrigger()
     .whileTrue(new HoldShootCommand(m_shooterSubsystem));
   
    }
@@ -114,16 +137,4 @@ public class RobotContainer {
     // An example command will be run in autonomous
    return autoChooser.getSelected();
   }
-
-  // creates methods which read the joystick values for display on the
-  // shuffleboard
-  public double getLeftYValue() {
-  return -m_controller.getLeftY();
-}
-
-public double getRightYValue() {
-  return -m_controller.getRightY();
-}
-
-
 }
