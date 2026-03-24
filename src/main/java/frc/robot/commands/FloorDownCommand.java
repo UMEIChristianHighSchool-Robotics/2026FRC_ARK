@@ -4,30 +4,12 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.subsystems.FloorLifterSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class FloorDownCommand extends Command {
-  /** Creates a new FloorDownCommand. */
-  public FloorDownCommand() {
-    // Use addRequirements() here to declare subsystem dependencies.
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+public class FloorDownCommand extends InstantCommand {
+   public FloorDownCommand(FloorLifterSubsystem floor) {
+    super(() -> floor.setState(FloorLifterSubsystem.FloorLiftState.DOWN), floor);
   }
 }
