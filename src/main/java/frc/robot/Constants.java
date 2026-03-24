@@ -95,15 +95,15 @@ public final class Constants {
       //---------------------PID / Feedforward------------------------//
       /*Tuning the pivot motor PID and gravity compensation */
     
-      //PID constants
-      public static final double kP = 2.2; //proportional how far from the target
-      public static final double kI = 0.0; //how long have I been wrong
-      public static final double kD = 0.08; //how fast is the error changing
+      //PID constants Look at error between current position and target position and adjust 
+      public static final double kP = 2.2; //Move to position power- Too high: overshoots, oscillates/jitters; too low: arm feels weak, stops short or droops
+      public static final double kI = 0.0; //Fixes small errors over time; should stay at 0 and correct with feedforward
+      public static final double kD = 0.08; //Damping/shock absorber slows things down - how fast is the error changing; too low: overshoot/bouncy motion; too high: feels sluggish, can twitch
     
-      //Feedforward for gravity compendation
-      public static final double kSFeedForward = 0.30; //voltage to get moving
-      public static final double kGFeedForward = 0.48; //voltage to hold arm up; lower for jerky movements
-      public static final double kVFeedForward = 0.0; //voltage for speed
+      //Feedforward for gravity compensation
+      public static final double kSFeedForward = 0.30; //static friction, predicts power needed to accelerate 
+      public static final double kGFeedForward = 0.48; //hold arm up against gravity; too high: arm lifts when it shouldn't, jumpy motion; too low: arm droops, PID works hard, motor buzzes
+      public static final double kVFeedForward = 0.0; // power for moving at a certain speed; too low: motion feels weak, PID does most of the work; to high: arm moves too aggressively
        
       //PID tolerance (radians)
       public static final double kDeployTolerance = 0.05;
@@ -150,6 +150,13 @@ public final class Constants {
     public static final double kTimeout = 0.6; //shooter feed timout (seconds)
   }
 
+  public static final class FloorLifterConstants {
+    
+    //Floor Lifter mechanism CANIDs
+    public static final int kFloorLifterCANID = 14;
+    
+  }
+  
   public static final class OperatorConstants {
 
     //Joystick USB ports

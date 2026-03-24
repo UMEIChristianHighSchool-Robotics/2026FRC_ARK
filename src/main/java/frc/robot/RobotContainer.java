@@ -18,6 +18,8 @@ import frc.robot.commands.TaxiShootAutoCommand;
 import frc.robot.commands.TwoPieceAutoCommand;
 import frc.robot.commands.SweepFromLeftEdgeStart;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.FloorDownCommand;
+import frc.robot.commands.FloorUpCommand;
 import frc.robot.commands.HoldShootCommand;
 import frc.robot.commands.IntakeDownCommand;
 import frc.robot.commands.IntakeTravelCommand;
@@ -27,9 +29,11 @@ import frc.robot.commands.RunIntakeRollerCommand;
 import frc.robot.commands.ShooterIdleCommand;
 import frc.robot.commands.SetDriveScaleCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.FloorLifterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakeState;
+import frc.robot.subsystems.FloorLifterSubsystem.FloorLifterState;
 
 public class RobotContainer {
 
@@ -37,6 +41,7 @@ public class RobotContainer {
   public final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
   public final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   public final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+  public final FloorLifterSubsystem m_floorLifterSubsystem = new FloorLifterSubsystem();
   
   //Xbox Controllers
   public final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -60,6 +65,8 @@ public class RobotContainer {
   public final IntakeTravelCommand m_intakeTravelCommand = new IntakeTravelCommand(m_intakeSubsystem);
   public final HoldShootCommand m_shootCommand = new HoldShootCommand(m_shooterSubsystem);
   public final ShooterIdleCommand m_shooterIdleCommand = new ShooterIdleCommand(m_shooterSubsystem);
+  public final FloorUpCommand m_floorUpCommand = new FloorUpCommand(m_floorLifterSubsystem);
+  public final FloorDownCommand m_floorDownCommand = new FloorDownCommand(m_floorLifterSubsystem);  
   
   public RobotContainer() {
     
@@ -117,11 +124,16 @@ public class RobotContainer {
 
 
     //------------Operator Controller------------//
-    //Intake Positions
-    m_operatorController.a().onTrue(new IntakeDownCommand(m_intakeSubsystem)); //A is "Down"
-    m_operatorController.b().onTrue(new IntakeTravelCommand(m_intakeSubsystem)); //B is "Travel"
-    m_operatorController.y().onTrue(new IntakeUpCommand(m_intakeSubsystem)); //Y is "Up"
+   
+    //Floor Lifter Positions
+    m_operatorController.a().onTrue(new FloorDownCommand(m_floorLifterSubsystem)); //A is "Down"
+    m_operatorController.y().onTrue(new FloorUpCommand(m_floorLifterSubsystem)); //Y is "Up"
 
+    //Intake Positions
+    m_operatorController.povDown().onTrue(new IntakeDownCommand(m_intakeSubsystem)); //D-Pad down is "Down"
+    m_operatorController.povRight().onTrue(new IntakeTravelCommand(m_intakeSubsystem)); //D-Pad right is "Travel"
+    m_operatorController.povUp().onTrue(new IntakeUpCommand(m_intakeSubsystem)); //D-Pad up is "Up"
+   
     //Intake Rollers
     m_operatorController.rightTrigger().whileTrue(new RunIntakeRollerCommand(m_intakeSubsystem)); //Right: Forward
     m_operatorController.leftTrigger().whileTrue(new ReverseIntakeRollerCommand(m_intakeSubsystem)); //Left: Reverse
