@@ -121,6 +121,7 @@ public final class Constants {
       public static final double kRollerVoltage = 8;
       public static final double kDeployVoltage = 12;
    
+      
   }
 
   public static final class ShooterConstants {
@@ -154,7 +155,31 @@ public final class Constants {
     
     //Floor Lifter mechanism CANIDs
     public static final int kFloorLifterCANID = 14;
+
+    //Motor control
+    public static final boolean kFloorLifterInverted= false;
+    public static final int kCurrentLimit = 40;
+    public static final double kRampRate = 0.7;
+    public static final double kVoltCompensation = 12.0;
+   
+    //-------------- States (floor lifter positions)-------------//
+    public static final double kGearRatio=9.0;
     
+    //Floor Lifter position radians
+    public static final double kUpRadians = 0.26;
+    public static final double kDownRadians = 0.0;
+    
+    //PID
+    public static final double kP = 4.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.2;
+    public static final double kLifterTolerance = 0.05;
+
+    public static final double kUpSoftLimit = 0.3;
+    public static final double kDownSoftLimit = -0.02;
+    public static final boolean kUpSoftLimitEnabled = true;//test and confirm limits first
+    public static final boolean kDownSoftLimitEnabled = true;//test and confirm limits first
+
   }
   
   public static final class OperatorConstants {

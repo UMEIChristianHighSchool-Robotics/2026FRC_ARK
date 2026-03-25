@@ -5,23 +5,18 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FloorLifterConstants;
-import frc.robot.Constants.IntakeConstants;
 
 public class FloorLifterSubsystem extends SubsystemBase {
 
@@ -45,7 +40,8 @@ public class FloorLifterSubsystem extends SubsystemBase {
   private SparkMaxConfig floorLifterConfig = new SparkMaxConfig();
 
   //Relative Encoder (built-in accessed via sparkmax)
-  private RelativeEncoder floorLifterEncoder = new SparkBase.getEncoder();
+  private RelativeEncoder floorLifterEncoder;
+  private EncoderConfig floorLifterEncoderConfig;
   
   //Create PID Controller object 
   private final PIDController floorPID =
@@ -55,14 +51,6 @@ public class FloorLifterSubsystem extends SubsystemBase {
       FloorLifterConstants.kD
     ); 
 
-  //Create feedforward object
-  private final ArmFeedforward feedforward=
-    new ArmFeedforward(
-      FloorLifterConstants.kSFeedForward,
-      FloorLifterConstants.kGFeedForward,
-      FloorLifterConstants.kVFeedForward
-    );
-
   public double getAngleRadians(){
     return floorLifterEncoder.getPosition();
   }
@@ -70,12 +58,17 @@ public class FloorLifterSubsystem extends SubsystemBase {
   private FloorLiftState currentState;
 
   //Create Tab in Shuffleboard
-  private final ShuffleboardTab FloorLiftTab = Shuffleboard.getTab("Floor Lifter")
-
-  @SuppressWarnings("removal")
+  private final ShuffleboardTab FloorLiftTab = Shuffleboard.getTab("Floor Lifter");
   
   
   public FloorLifterSubsystem() {
+
+    floorLifterEncoder = floorLifterMotor.getEncoder();
+
+    // Convert motor rotations → mechanism radians
+    floorLifterEncoderConfig.positionConversionFactor(
+      2 * Math.PI / FloorLifterConstants.kGearRatio
+    );
 
     //Configure motor controller
     floorLifterConfig
@@ -100,7 +93,6 @@ public class FloorLifterSubsystem extends SubsystemBase {
     
     //Telemetry
     FloorLiftTab.add("Floor Lift kP",FloorLifterConstants.kP);
-    FloorLiftTab.add("Floor Lift kGff",FloorLifterConstants.kGFeedForward);
     FloorLiftTab.addDouble("Angle Error", () -> currentState.radians - getAngleRadians());
     FloorLiftTab.addDouble("Current Angle (rad)", this::getAngleRadians);
     FloorLiftTab.addDouble("Target Angle (rad)", () -> currentState.radians);
@@ -123,8 +115,8 @@ public class FloorLifterSubsystem extends SubsystemBase {
   //method to change floor lift states
   public boolean isAtTarget() {
     return Math.abs(
-      floorLifterEncoder.get() - currentState.radians
-    ) < 0.05;
+      getAngleRadians() - currentState.radians
+    ) < FloorLifterConstants.kLifterTolerance;
   }
 
   public void setState(FloorLiftState newState){
@@ -136,21 +128,19 @@ public class FloorLifterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    double currentAngle = floorLifterEncoder.get();
+    double currentAngle = getAngleRadians();
     double targetAngle = currentState.radians;
     double pidOutput = floorPID.calculate(currentAngle, targetAngle);
-    double ff = feedforward.calculate(currentAngle,0.0); //feedforward
-    double outputVolts = pidOutput + ff;
-    outputVolts = MathUtil.clamp(outputVolts, -12.0,12.0);
+    pidOutput = MathUtil.clamp(pidOutput, -12.0,12.0);
 
     //apply soft limit
-     if ((currentAngle >= FloorLifterConstants.kForwardSoftLimit && outputVolts > 0) ||
-      (currentAngle <= FloorLifterConstants.kReverseSoftLimit && outputVolts < 0)) {
-        outputVolts = 0;
+     if ((currentAngle >= FloorLifterConstants.kUpSoftLimit && pidOutput > 0) ||
+      (currentAngle <= FloorLifterConstants.kDownSoftLimit && pidOutput < 0)) {
+        pidOutput = 0;
     }
 
     if (DriverStation.isEnabled()){
-      floorLifterMotor.setVoltage(outputVolts);
+      floorLifterMotor.setVoltage(pidOutput);
     }
     else {
       floorLifterMotor.stopMotor();

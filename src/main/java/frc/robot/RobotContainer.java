@@ -33,7 +33,6 @@ import frc.robot.subsystems.FloorLifterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.IntakeState;
-import frc.robot.subsystems.FloorLifterSubsystem.FloorLifterState;
 
 public class RobotContainer {
 

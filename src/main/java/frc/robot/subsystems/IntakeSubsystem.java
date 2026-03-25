@@ -173,7 +173,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public boolean isAtTarget() {
     return Math.abs(
         intakeDeployEncoder.get() - currentState.radians
-    ) < 0.05;
+    ) < IntakeConstants.kDeployTolerance;
   }
 
   public void setState(IntakeState newState) {
