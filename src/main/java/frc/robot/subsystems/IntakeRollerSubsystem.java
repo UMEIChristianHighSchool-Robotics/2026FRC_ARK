@@ -11,10 +11,6 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
@@ -33,7 +29,8 @@ public class IntakeRollerSubsystem extends SubsystemBase {
 //Create a tab in Shuffleboard
   private final ShuffleboardTab intakeTab= Shuffleboard.getTab("Intake");
   
-   public IntakeRollerSubsystem() {
+   @SuppressWarnings("removal")
+  public IntakeRollerSubsystem() {
 
         //Configure motor controllers inside the constructor
     //---------Configure intake roller---------
