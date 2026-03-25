@@ -54,16 +54,16 @@ public class RobotContainer {
 
   //Commands
   public final TaxiOnlyAutoCommand m_TaxiOnlyAutoCommand = new TaxiOnlyAutoCommand(m_driveSubsystem);
-  public final TaxiShootAutoCommand m_TaxiShootAutoCommand = new TaxiShootAutoCommand(m_driveSubsystem, m_intakePivotSubsystem, m_intakeRollerSubsystem, m_shooterSubsystem);
+  public final TaxiShootAutoCommand m_TaxiShootAutoCommand = new TaxiShootAutoCommand(m_driveSubsystem, m_shooterSubsystem);
   public final TwoPieceAutoCommand m_TwoPieceAutoCommand = new TwoPieceAutoCommand(m_driveSubsystem, m_intakePivotSubsystem, m_intakeRollerSubsystem, m_shooterSubsystem);
   public final SweepFromLeftEdgeStart m_SweepFromLeftEdgeStart = new SweepFromLeftEdgeStart(m_driveSubsystem, m_intakePivotSubsystem, m_intakeRollerSubsystem, m_shooterSubsystem);
   public final SetDriveScaleCommand m_SetDriveScaleCommand = new SetDriveScaleCommand(m_driveSubsystem, 0, 0);
   public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_driverController);
-  public final RunIntakeRollerCommand m_runIntakeRollerCommand = new RunIntakeRollerCommand(m_intakePivotSubsystem, m_intakeRollerSubsystem);
-  public final ReverseIntakeRollerCommand m_reverseIntakeRollerCommand = new ReverseIntakeRollerCommand(m_intakePivotSubsystem, m_intakeRollerSubsystem);
-  public final IntakeDownCommand m_intakeDownCommand = new IntakeDownCommand(m_intakePivotSubsystem, m_intakeRollerSubsystem);
-  public final IntakeUpCommand m_intakeUpCommand = new IntakeUpCommand(m_intakePivotSubsystem, m_intakeRollerSubsystem);
-  public final IntakeTravelCommand m_intakeTravelCommand = new IntakeTravelCommand(m_intakePivotSubsystem, m_intakeRollerSubsystem);
+  public final RunIntakeRollerCommand m_runIntakeRollerCommand = new RunIntakeRollerCommand(m_intakeRollerSubsystem);
+  public final ReverseIntakeRollerCommand m_reverseIntakeRollerCommand = new ReverseIntakeRollerCommand(m_intakeRollerSubsystem);
+  public final IntakeDownCommand m_intakeDownCommand = new IntakeDownCommand(m_intakePivotSubsystem);
+  public final IntakeUpCommand m_intakeUpCommand = new IntakeUpCommand(m_intakePivotSubsystem);
+  public final IntakeTravelCommand m_intakeTravelCommand = new IntakeTravelCommand(m_intakePivotSubsystem);
   public final HoldShootCommand m_shootCommand = new HoldShootCommand(m_shooterSubsystem);
   public final ShooterIdleCommand m_shooterIdleCommand = new ShooterIdleCommand(m_shooterSubsystem);
   public final FloorUpCommand m_floorUpCommand = new FloorUpCommand(m_floorLifterSubsystem);
@@ -112,7 +112,7 @@ public class RobotContainer {
       .whileTrue(
         new ParallelCommandGroup(
           new IntakeDownCommand(m_intakePivotSubsystem),
-          new RunIntakeRollerCommand(m_intakePivotSubsystem)
+          new RunIntakeRollerCommand(m_intakeRollerSubsystem)
         ))
       .onFalse(new IntakeTravelCommand(m_intakePivotSubsystem));
 
