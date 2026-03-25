@@ -58,8 +58,8 @@ public class DriveSubsystem extends SubsystemBase {
   private final DifferentialDrive m_drive = new DifferentialDrive(leftLeader,rightLeader);
   
      
-   //Set default Speed Mode to Drive
-  private OperatorConstants.SpeedSelect currentSpeed = OperatorConstants.SpeedSelect.DRIVE;
+   //Set default Speed Mode to Slow
+  private OperatorConstants.SpeedSelect currentSpeed = OperatorConstants.SpeedSelect.SLOW;
   
   // --- Forward and turn scaling (fields, accessible by commands) --- 
   private double forwardScale = currentSpeed.driveScale;
