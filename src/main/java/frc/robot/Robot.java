@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     //makes sure the intake deploy system is up to begin
-    m_robotContainer.m_intakeSubsystem.ensureUpOnEnable();
+    m_robotContainer.m_intakePivotSubsystem.ensureUpOnEnable();
     
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -81,7 +81,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     //makes sure the deploy system is UP position to begin
-    m_robotContainer.m_intakeSubsystem.ensureUpOnEnable();
+    m_robotContainer.m_intakePivotSubsystem.ensureUpOnEnable();
 
   }
 

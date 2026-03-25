@@ -7,7 +7,8 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.IntakePivotSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class TwoPieceAutoCommand extends SequentialCommandGroup {
@@ -15,7 +16,8 @@ public class TwoPieceAutoCommand extends SequentialCommandGroup {
 
     public TwoPieceAutoCommand(
             DriveSubsystem drive,
-            IntakeSubsystem intake,
+            IntakePivotSubsystem intakePivot,
+            IntakeRollerSubsystem intakeRoller,
             ShooterSubsystem shooter) {
         
       
@@ -26,13 +28,13 @@ public class TwoPieceAutoCommand extends SequentialCommandGroup {
             //Deploy intake while driving
             new ParallelDeadlineGroup(
                 drive.driveForwardMeters(3),
-                new IntakeDownCommand(intake)
+                new IntakeDownCommand(intakePivot)
             ),
             
             // Drive forward while running intake roller
             new ParallelDeadlineGroup(
                 drive.driveForwardMeters(1.5),
-                new RunIntakeRollerCommand(intake)
+                new RunIntakeRollerCommand(intakeRoller)
             ),
 
             // Shoot
@@ -42,7 +44,7 @@ public class TwoPieceAutoCommand extends SequentialCommandGroup {
             //Reposition for TeleOp
             new ParallelDeadlineGroup(
                 drive.turnRelative(-90),    
-                new IntakeDownCommand(intake)
+                new IntakeDownCommand(intakePivot)
             )
 
         );
