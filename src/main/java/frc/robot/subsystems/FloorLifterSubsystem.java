@@ -41,7 +41,6 @@ public class FloorLifterSubsystem extends SubsystemBase {
 
   //Relative Encoder (built-in accessed via sparkmax)
   private RelativeEncoder floorLifterEncoder;
-  private EncoderConfig floorLifterEncoderConfig;
   
   //Create PID Controller object 
   private final PIDController floorPID =
@@ -55,7 +54,7 @@ public class FloorLifterSubsystem extends SubsystemBase {
     return floorLifterEncoder.getPosition();
   }
 
-  private FloorLiftState currentState;
+  private FloorLiftState currentState = FloorLiftState.DOWN;
 
   //Create Tab in Shuffleboard
   private final ShuffleboardTab FloorLiftTab = Shuffleboard.getTab("Floor Lifter");
@@ -66,8 +65,8 @@ public class FloorLifterSubsystem extends SubsystemBase {
     floorLifterEncoder = floorLifterMotor.getEncoder();
 
     // Convert motor rotations → mechanism radians
-    floorLifterEncoderConfig.positionConversionFactor(
-      2 * Math.PI / FloorLifterConstants.kGearRatio
+    floorLifterConfig.encoder.positionConversionFactor(
+      2.0 * Math.PI / FloorLifterConstants.kGearRatio
     );
 
     //Configure motor controller
@@ -77,7 +76,10 @@ public class FloorLifterSubsystem extends SubsystemBase {
       .openLoopRampRate(FloorLifterConstants.kRampRate)
       .voltageCompensation(FloorLifterConstants.kVoltCompensation)
       .idleMode(IdleMode.kBrake);
-    floorLifterMotor.configure(floorLifterConfig, com.revrobotics.ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+    floorLifterMotor.configure(
+      floorLifterConfig, 
+      com.revrobotics.ResetMode.kResetSafeParameters, 
+      com.revrobotics.PersistMode.kPersistParameters);
 
     //Configure Positioning
     floorPID.setTolerance(FloorLifterConstants.kLifterTolerance);
@@ -92,7 +94,7 @@ public class FloorLifterSubsystem extends SubsystemBase {
     }
     
     //Telemetry
-    FloorLiftTab.add("Floor Lift kP",FloorLifterConstants.kP);
+    FloorLiftTab.addNumber("Floor Lift kP", () -> FloorLifterConstants.kP);
     FloorLiftTab.addDouble("Angle Error", () -> currentState.radians - getAngleRadians());
     FloorLiftTab.addDouble("Current Angle (rad)", this::getAngleRadians);
     FloorLiftTab.addDouble("Target Angle (rad)", () -> currentState.radians);

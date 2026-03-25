@@ -82,7 +82,7 @@ public final class Constants {
       public static final double kDeployVoltCompensation = 12.0; //keeps commanded voltage constant depite battery load
    
       //--------------------- States------------------------//
-      /*Where the intake can be (pivot angles) */
+      /*Where the intake can be (pivot angles) */ 
     
                             //Intake deploy position radians
                             public static final double kUpRadians = 3.45;
@@ -90,7 +90,7 @@ public final class Constants {
                             public static final double kIntakeRadians = 0.0;
     
       //Zero offset for encoder calibration
-      public static final double kZeroOffset = 3.2;//to find this value put intake in the UP position physically. Print encoder value to dashboard. That value becomes your offset.
+      public static final double kZeroOffset = 4.8 ;//to find this value put intake in the UP position physically. Print encoder value to dashboard. That value becomes your offset.
     
       //---------------------PID / Feedforward------------------------//
       /*Tuning the pivot motor PID and gravity compensation */
