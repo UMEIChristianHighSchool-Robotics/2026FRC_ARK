@@ -75,6 +75,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
   //Create a tab in Shuffleboard
   private final ShuffleboardTab intakeTab= Shuffleboard.getTab("Intake");
   
+@SuppressWarnings("removal")
 public IntakePivotSubsystem() {
  //Configure motor controllers inside the constructor
   
