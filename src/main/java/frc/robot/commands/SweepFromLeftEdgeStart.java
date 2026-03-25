@@ -22,10 +22,12 @@ public class SweepFromLeftEdgeStart extends SequentialCommandGroup {
         
         addCommands(
            
+            
+            
             // Drive Forward + Prapare for intake ~ 3.6 s
-            new ParallelDeadlineGroup(
-                new SetDriveScaleCommand(
+             new SetDriveScaleCommand(
                     drive,1.0, 1.0),
+            new ParallelDeadlineGroup(
                 drive.driveForwardMeters(2.1), // 3.6 sec
                 new WaitCommand(2)
                     .andThen(new HoldShootCommand(shooter)
@@ -35,27 +37,29 @@ public class SweepFromLeftEdgeStart extends SequentialCommandGroup {
             ),
       
             // Large Curve Sweep ~ 3.5 sec
-            new ParallelDeadlineGroup(
-                new SetDriveScaleCommand(
+            new SetDriveScaleCommand(
                     drive,0.83, 0.08),
+            new ParallelDeadlineGroup(
                 new RunIntakeRollerCommand(intakeRoller),             
-                drive.turnRelative(40), // 3.5 sec
-                drive.driveForwardMeters(1.6) // 3.5 sec
+                drive.turnRelative(40)
             ),
-
+            drive.driveForwardMeters(1.6), // 3.5 sec
             // Small Curve Sweep ~ 3.5 sec
-            new ParallelDeadlineGroup(
-                new SetDriveScaleCommand(
+            
+            new SetDriveScaleCommand(
                     drive,0.75, 0.28),
-                new RunIntakeRollerCommand(intakeRoller),             
-                drive.turnRelative(140), // 3.5 sec
-                drive.driveForwardMeters(1.4) // 3.5 sec
-            ),
-
-            // Position to shoot ~ 1.9 sec
             new ParallelDeadlineGroup(
-                new SetDriveScaleCommand(
+              
+                new RunIntakeRollerCommand(intakeRoller),             
+                drive.turnRelative(140) // 3.5 sec
+        
+            ),
+        drive.driveForwardMeters(1.4), // 3.5 sec
+            // Position to shoot ~ 1.9 sec
+           new SetDriveScaleCommand(
                     drive,0.8, 0.6),
+            new ParallelDeadlineGroup(
+                
                 new RunIntakeRollerCommand(intakeRoller),
                 drive.turnRelative(140) // 1.9 sec
             ),  
