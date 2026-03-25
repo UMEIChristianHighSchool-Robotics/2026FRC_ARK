@@ -133,14 +133,14 @@ public final class Constants {
     //Shooter mechanism motor controller configurations
     public static final int kCurrentLimit = 40;
     public static final double kRampRate = 0.7;
-    public static final double kVoltCompensation = 12.0;
+    public static final double kVoltCompensation = 11.0;
 
     public static final double kP = 0.002;//recommend 0.015-0.003 starting
     public static final double kI = 0;//leave 0
     public static final double kD = 0;// leave 0
     public static final double kFF = 0.0022;//recommend 0.0021-0.0023 starting
 
-    public static final double kSpeedTolerance = 125; //RPM
+    public static final double kSpeedTolerance = 200; //RPM
     public static final double kTargetSpeed = 3000; //RPM
 
     //Shooter motor inversion
@@ -166,16 +166,15 @@ public final class Constants {
     public static final double kGearRatio=9.0;
     
     //Floor Lifter position radians
-    public static final double kUpRadians = .78;
-    public static final double kDownRadians = 0.0;
-    
+    public static final double kUpRadians = 0.82;
+    public static final double kDownRadians = 0.0;    
     //PID
-    public static final double kP = 4.0;
+    public static final double kP = 3.0;
     public static final double kI = 0.0;
     public static final double kD = 0.2;
     public static final double kLifterTolerance = 0.05;
 
-    public static final double kUpSoftLimit = 0.3;
+    public static final double kUpSoftLimit = 1.0;
     public static final double kDownSoftLimit = -0.02;
     public static final boolean kUpSoftLimitEnabled = true;//test and confirm limits first
     public static final boolean kDownSoftLimitEnabled = true;//test and confirm limits first
@@ -197,10 +196,10 @@ public final class Constants {
     //Speed and deadband
     public static final double kDeadband = 0.05;
     public enum SpeedSelect{
-      CRAWL(0.10,0.10),
-      SLOW(0.30,0.15),
-      DRIVE(0.70,0.50),
-      FAST(1.00,0.30);
+      CRAWL(0.20,0.35),
+      SLOW(0.40,0.45),
+      DRIVE(0.70,0.60),
+      FAST(1.00,0.45);
 
       public final double driveScale;
       public final double turnScale;

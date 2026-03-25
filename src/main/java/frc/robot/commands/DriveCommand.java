@@ -52,8 +52,8 @@ public class DriveCommand extends Command {
         if (driveMode == null) driveMode = "Arcade Drive";
 
         if (driveMode.equals("Arcade Drive")) {
-            double forward = MathUtil.applyDeadband(m_controller.getLeftY(), OperatorConstants.kDeadband) * m_drive.getForwardScale();
-            double turn = MathUtil.applyDeadband(m_controller.getLeftX(), OperatorConstants.kDeadband) * m_drive.getTurnScale();
+            double forward = -MathUtil.applyDeadband(m_controller.getLeftY(), OperatorConstants.kDeadband) * m_drive.getForwardScale();
+            double turn = -MathUtil.applyDeadband(m_controller.getLeftX(), OperatorConstants.kDeadband) * m_drive.getTurnScale();
             m_drive.setArcadePower(forward, turn);
         } else {
             double left = MathUtil.applyDeadband(m_controller.getLeftY(), OperatorConstants.kDeadband) * m_drive.getForwardScale();
