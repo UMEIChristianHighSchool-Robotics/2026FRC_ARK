@@ -8,14 +8,16 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.IntakePivotSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class SweepFromLeftEdgeStart extends SequentialCommandGroup {
 
     public SweepFromLeftEdgeStart(
             DriveSubsystem drive,
-            IntakeSubsystem intake,
+            IntakePivotSubsystem intakePivot,
+            IntakeRollerSubsystem intakeRoller,
             ShooterSubsystem shooter) {
         
         addCommands(
@@ -29,14 +31,14 @@ public class SweepFromLeftEdgeStart extends SequentialCommandGroup {
                     .andThen(new HoldShootCommand(shooter)
                     .withTimeout(1.2)), // 3.2 sec
                 new WaitCommand(2.5)
-                    .andThen(new IntakeDownCommand(intake)) // 3.0 sec
+                    .andThen(new IntakeDownCommand(intakePivot)) // 3.0 sec
             ),
       
             // Large Curve Sweep ~ 3.5 sec
             new ParallelDeadlineGroup(
                 new SetDriveScaleCommand(
                     drive,0.83, 0.08),
-                new RunIntakeRollerCommand(intake),             
+                new RunIntakeRollerCommand(intakeRoller),             
                 drive.turnRelative(40), // 3.5 sec
                 drive.driveForwardMeters(1.6) // 3.5 sec
             ),
@@ -45,7 +47,7 @@ public class SweepFromLeftEdgeStart extends SequentialCommandGroup {
             new ParallelDeadlineGroup(
                 new SetDriveScaleCommand(
                     drive,0.75, 0.28),
-                new RunIntakeRollerCommand(intake),             
+                new RunIntakeRollerCommand(intakeRoller),             
                 drive.turnRelative(140), // 3.5 sec
                 drive.driveForwardMeters(1.4) // 3.5 sec
             ),
@@ -54,7 +56,7 @@ public class SweepFromLeftEdgeStart extends SequentialCommandGroup {
             new ParallelDeadlineGroup(
                 new SetDriveScaleCommand(
                     drive,0.8, 0.6),
-                new RunIntakeRollerCommand(intake),
+                new RunIntakeRollerCommand(intakeRoller),
                 drive.turnRelative(140) // 1.9 sec
             ),  
            
@@ -67,7 +69,7 @@ public class SweepFromLeftEdgeStart extends SequentialCommandGroup {
                     drive,0.6, 0.25),
                 drive.driveForwardMeters(-0.6), // 2.5 sec 
                 drive.turnRelative(-55), // 2.5 sec
-                new IntakeTravelCommand(intake) // 1.5 sec
+                new IntakeTravelCommand(intakePivot) // 1.5 sec
             )
         );
     }

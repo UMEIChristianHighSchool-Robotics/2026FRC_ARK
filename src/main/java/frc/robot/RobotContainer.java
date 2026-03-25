@@ -30,15 +30,17 @@ import frc.robot.commands.ShooterIdleCommand;
 import frc.robot.commands.SetDriveScaleCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FloorLifterSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.IntakePivotSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.IntakeSubsystem.IntakeState;
+import frc.robot.subsystems.IntakePivotSubsystem.IntakeState;
 
 public class RobotContainer {
 
   //Subsystems
   public final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-  public final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+  public final IntakeRollerSubsystem m_intakeRollerSubsystem = new IntakeRollerSubsystem();
+  public final IntakePivotSubsystem m_intakePivotSubsystem = new IntakePivotSubsystem();
   public final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   public final FloorLifterSubsystem m_floorLifterSubsystem = new FloorLifterSubsystem();
   
@@ -52,16 +54,16 @@ public class RobotContainer {
 
   //Commands
   public final TaxiOnlyAutoCommand m_TaxiOnlyAutoCommand = new TaxiOnlyAutoCommand(m_driveSubsystem);
-  public final TaxiShootAutoCommand m_TaxiShootAutoCommand = new TaxiShootAutoCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
-  public final TwoPieceAutoCommand m_TwoPieceAutoCommand = new TwoPieceAutoCommand(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
-  public final SweepFromLeftEdgeStart m_SweepFromLeftEdgeStart = new SweepFromLeftEdgeStart(m_driveSubsystem, m_intakeSubsystem, m_shooterSubsystem);
+  public final TaxiShootAutoCommand m_TaxiShootAutoCommand = new TaxiShootAutoCommand(m_driveSubsystem, m_intakePivotSubsystem, m_intakeRollerSubsystem, m_shooterSubsystem);
+  public final TwoPieceAutoCommand m_TwoPieceAutoCommand = new TwoPieceAutoCommand(m_driveSubsystem, m_intakePivotSubsystem, m_intakeRollerSubsystem, m_shooterSubsystem);
+  public final SweepFromLeftEdgeStart m_SweepFromLeftEdgeStart = new SweepFromLeftEdgeStart(m_driveSubsystem, m_intakePivotSubsystem, m_intakeRollerSubsystem, m_shooterSubsystem);
   public final SetDriveScaleCommand m_SetDriveScaleCommand = new SetDriveScaleCommand(m_driveSubsystem, 0, 0);
   public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_driverController);
-  public final RunIntakeRollerCommand m_runIntakeRollerCommand = new RunIntakeRollerCommand(m_intakeSubsystem);
-  public final ReverseIntakeRollerCommand m_reverseIntakeRollerCommand = new ReverseIntakeRollerCommand(m_intakeSubsystem);
-  public final IntakeDownCommand m_intakeDownCommand = new IntakeDownCommand(m_intakeSubsystem);
-  public final IntakeUpCommand m_intakeUpCommand = new IntakeUpCommand(m_intakeSubsystem);
-  public final IntakeTravelCommand m_intakeTravelCommand = new IntakeTravelCommand(m_intakeSubsystem);
+  public final RunIntakeRollerCommand m_runIntakeRollerCommand = new RunIntakeRollerCommand(m_intakePivotSubsystem, m_intakeRollerSubsystem);
+  public final ReverseIntakeRollerCommand m_reverseIntakeRollerCommand = new ReverseIntakeRollerCommand(m_intakePivotSubsystem, m_intakeRollerSubsystem);
+  public final IntakeDownCommand m_intakeDownCommand = new IntakeDownCommand(m_intakePivotSubsystem, m_intakeRollerSubsystem);
+  public final IntakeUpCommand m_intakeUpCommand = new IntakeUpCommand(m_intakePivotSubsystem, m_intakeRollerSubsystem);
+  public final IntakeTravelCommand m_intakeTravelCommand = new IntakeTravelCommand(m_intakePivotSubsystem, m_intakeRollerSubsystem);
   public final HoldShootCommand m_shootCommand = new HoldShootCommand(m_shooterSubsystem);
   public final ShooterIdleCommand m_shooterIdleCommand = new ShooterIdleCommand(m_shooterSubsystem);
   public final FloorUpCommand m_floorUpCommand = new FloorUpCommand(m_floorLifterSubsystem);
@@ -71,14 +73,14 @@ public class RobotContainer {
     
     // Set default subsystem commands in the constructor
     m_driveSubsystem.setDefaultCommand(m_driveCommand);
-    m_intakeSubsystem.setDefaultCommand(
-        new RunCommand(m_intakeSubsystem::stopRoller, m_intakeSubsystem));
+    m_intakeRollerSubsystem.setDefaultCommand(
+        new RunCommand(m_intakeRollerSubsystem::stopRoller, m_intakeRollerSubsystem));
     m_shooterSubsystem.setDefaultCommand(
         new ShooterIdleCommand(m_shooterSubsystem)
       );
 
     // Set default intake state when the robot initializes
-    m_intakeSubsystem.setState(IntakeState.TRAVEL);
+    m_intakePivotSubsystem.setState(IntakeState.TRAVEL);
 
     // Configure the trigger bindings
     configureBindings();
@@ -109,15 +111,15 @@ public class RobotContainer {
     m_driverController.rightTrigger()
       .whileTrue(
         new ParallelCommandGroup(
-          new IntakeDownCommand(m_intakeSubsystem),
-          new RunIntakeRollerCommand(m_intakeSubsystem)
+          new IntakeDownCommand(m_intakePivotSubsystem),
+          new RunIntakeRollerCommand(m_intakePivotSubsystem)
         ))
-      .onFalse(new IntakeTravelCommand(m_intakeSubsystem));
+      .onFalse(new IntakeTravelCommand(m_intakePivotSubsystem));
 
   
     
     //Right bumper: reverse intake roller to clear jams 
-    m_driverController.rightBumper().whileTrue(new ReverseIntakeRollerCommand(m_intakeSubsystem));
+    m_driverController.rightBumper().whileTrue(new ReverseIntakeRollerCommand(m_intakeRollerSubsystem));
   
     //Left trigger: shoot
     m_driverController.leftTrigger()
@@ -134,13 +136,13 @@ public class RobotContainer {
     m_operatorController.y().onTrue(new FloorUpCommand(m_floorLifterSubsystem)); //Y is "Up"
 
     //Intake Positions
-    m_operatorController.povDown().onTrue(new IntakeDownCommand(m_intakeSubsystem)); //D-Pad down is "Down"
-    m_operatorController.povRight().onTrue(new IntakeTravelCommand(m_intakeSubsystem)); //D-Pad right is "Travel"
-    m_operatorController.povUp().onTrue(new IntakeUpCommand(m_intakeSubsystem)); //D-Pad up is "Up"
+    m_operatorController.povDown().onTrue(new IntakeDownCommand(m_intakePivotSubsystem)); //D-Pad down is "Down"
+    m_operatorController.povRight().onTrue(new IntakeTravelCommand(m_intakePivotSubsystem)); //D-Pad right is "Travel"
+    m_operatorController.povUp().onTrue(new IntakeUpCommand(m_intakePivotSubsystem)); //D-Pad up is "Up"
    
     //Intake Rollers
-    m_operatorController.rightTrigger().whileTrue(new RunIntakeRollerCommand(m_intakeSubsystem)); //Right: Forward
-    m_operatorController.leftTrigger().whileTrue(new ReverseIntakeRollerCommand(m_intakeSubsystem)); //Left: Reverse
+    m_operatorController.rightTrigger().whileTrue(new RunIntakeRollerCommand(m_intakeRollerSubsystem)); //Right: Forward
+    m_operatorController.leftTrigger().whileTrue(new ReverseIntakeRollerCommand(m_intakeRollerSubsystem)); //Left: Reverse
   
    }
 

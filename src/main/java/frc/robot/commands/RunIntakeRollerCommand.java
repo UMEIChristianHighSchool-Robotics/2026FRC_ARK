@@ -2,25 +2,25 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.IntakeRollerSubsystem;
 
 public class RunIntakeRollerCommand extends Command {
 
-  private final IntakeSubsystem intake;
+  private final IntakeRollerSubsystem intakeRoller;
 
-  public RunIntakeRollerCommand(IntakeSubsystem intake) {
-    this.intake = intake;
-    addRequirements(intake);
+  public RunIntakeRollerCommand(IntakeRollerSubsystem intakeRoller) {
+    this.intakeRoller = intakeRoller;
+    addRequirements(intakeRoller);
   }
 
   @Override
   public void execute() {
-    intake.runRoller(-IntakeConstants.kRollerVoltage);
+    intakeRoller.runRoller(-IntakeConstants.kRollerVoltage);
   }
 
   @Override
   public void end(boolean interrupted) {
-    intake.stopRoller();
+    intakeRoller.stopRoller();
   }
 
   @Override
