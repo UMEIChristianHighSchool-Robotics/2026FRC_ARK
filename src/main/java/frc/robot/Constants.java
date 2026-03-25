@@ -86,7 +86,7 @@ public final class Constants {
     
                             //Intake deploy position radians
                             public static final double kUpRadians = 3.45;
-                            public static final double kTravelRadians = 0.7;
+                            public static final double kTravelRadians = 1.3;
                             public static final double kIntakeRadians = 0.0;
     
       //Zero offset for encoder calibration
@@ -141,7 +141,7 @@ public final class Constants {
     public static final double kFF = 0.0022;//recommend 0.0021-0.0023 starting
 
     public static final double kSpeedTolerance = 125; //RPM
-    public static final double kTargetSpeed = 4000; //RPM
+    public static final double kTargetSpeed = 3000; //RPM
 
     //Shooter motor inversion
     public static final boolean kLeftInverted = false;
