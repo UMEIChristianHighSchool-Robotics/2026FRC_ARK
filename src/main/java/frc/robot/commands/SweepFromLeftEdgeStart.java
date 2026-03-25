@@ -58,12 +58,8 @@ public class SweepFromLeftEdgeStart extends SequentialCommandGroup {
                 drive.turnRelative(140) // 1.9 sec
             ),  
            
-            //Shoot ~ 2.0 sec
-            new ParallelDeadlineGroup(
-                new IntakeUpCommand(intake),// 1.8 sec
-                new HoldShootCommand(shooter)
-                    .withTimeout(2.0) // 2.0 sec
-            ),  
+            //Shoot ~ 1.5 sec
+            new HoldShootCommand(shooter).withTimeout(1.5),  
 
             //Position for TeleOp ~ 2.5 sec
             new ParallelDeadlineGroup(
@@ -73,7 +69,6 @@ public class SweepFromLeftEdgeStart extends SequentialCommandGroup {
                 drive.turnRelative(-55), // 2.5 sec
                 new IntakeTravelCommand(intake) // 1.5 sec
             )
-            
         );
     }
 }

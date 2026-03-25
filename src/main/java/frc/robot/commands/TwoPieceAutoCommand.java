@@ -35,17 +35,14 @@ public class TwoPieceAutoCommand extends SequentialCommandGroup {
                 new RunIntakeRollerCommand(intake)
             ),
 
-            // Shoot while lifting intake
-            new ParallelDeadlineGroup(
-                new HoldShootCommand(shooter).withTimeout(1.5),
-                new IntakeUpCommand(intake)
-            ),
+            // Shoot
+            new HoldShootCommand(shooter).withTimeout(1.5),
+                  
 
             //Reposition for TeleOp
             new ParallelDeadlineGroup(
                 drive.turnRelative(-90),    
-                new IntakeDownCommand(intake),
-                new RunIntakeRollerCommand(intake)
+                new IntakeDownCommand(intake)
             )
 
         );
