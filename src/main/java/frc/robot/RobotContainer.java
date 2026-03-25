@@ -97,6 +97,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+<<<<<<< Updated upstream
     
     //------------Driver Controller------------//
     //D-Pad Speed Selector
@@ -116,6 +117,25 @@ public class RobotContainer {
 
     //Right trigger: shoot
     m_driverController.rightTrigger()
+=======
+    //A button: Intake DOWN
+    m_controller.a().onTrue(new IntakeDownCommand(m_intakeSubsystem));
+
+    //B button: Intake TRAVEL
+    m_controller.b().onTrue(new IntakeTravelCommand(m_intakeSubsystem));
+
+    //Y button: Intake UP
+    m_controller.y().onTrue(new IntakeUpCommand(m_intakeSubsystem));
+
+    //Left trigger: intake roller
+    m_controller.rightTrigger().whileTrue(new RunIntakeRollerCommand(m_intakeSubsystem));
+    
+    //Left bumber: reverse intake roller to clear jams 
+    m_controller.rightBumper().whileTrue(new ReverseIntakeRollerCommand(m_intakeSubsystem));
+  
+    //Right trigger: shoot
+    m_controller.leftTrigger()
+>>>>>>> Stashed changes
     .whileTrue(new HoldShootCommand(m_shooterSubsystem));
   
     //A button: STOP everything
