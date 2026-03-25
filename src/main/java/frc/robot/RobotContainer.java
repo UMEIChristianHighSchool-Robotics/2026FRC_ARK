@@ -97,7 +97,6 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-<<<<<<< Updated upstream
     
     //------------Driver Controller------------//
     //D-Pad Speed Selector
@@ -106,8 +105,8 @@ public class RobotContainer {
     m_driverController.povDown().onTrue(new InstantCommand(() -> m_driveSubsystem.setSpeedMode(OperatorConstants.SpeedSelect.SLOW)));
     m_driverController.povLeft().onTrue(new InstantCommand(() -> m_driveSubsystem.setSpeedMode(OperatorConstants.SpeedSelect.CRAWL)));
 
-    //Left Trigger: Deploy and run intake roller
-    m_driverController.leftTrigger()
+    //Right Trigger: Deploy and run intake roller
+    m_driverController.rightTrigger()
       .whileTrue(
         new ParallelCommandGroup(
           new IntakeDownCommand(m_intakeSubsystem),
@@ -115,31 +114,17 @@ public class RobotContainer {
         ))
       .onFalse(new IntakeTravelCommand(m_intakeSubsystem));
 
-    //Right trigger: shoot
-    m_driverController.rightTrigger()
-=======
-    //A button: Intake DOWN
-    m_controller.a().onTrue(new IntakeDownCommand(m_intakeSubsystem));
-
-    //B button: Intake TRAVEL
-    m_controller.b().onTrue(new IntakeTravelCommand(m_intakeSubsystem));
-
-    //Y button: Intake UP
-    m_controller.y().onTrue(new IntakeUpCommand(m_intakeSubsystem));
-
-    //Left trigger: intake roller
-    m_controller.rightTrigger().whileTrue(new RunIntakeRollerCommand(m_intakeSubsystem));
-    
-    //Left bumber: reverse intake roller to clear jams 
-    m_controller.rightBumper().whileTrue(new ReverseIntakeRollerCommand(m_intakeSubsystem));
   
-    //Right trigger: shoot
-    m_controller.leftTrigger()
->>>>>>> Stashed changes
+    
+    //Right bumper: reverse intake roller to clear jams 
+    m_driverController.rightBumper().whileTrue(new ReverseIntakeRollerCommand(m_intakeSubsystem));
+  
+    //Left trigger: shoot
+    m_driverController.leftTrigger()
     .whileTrue(new HoldShootCommand(m_shooterSubsystem));
   
-    //A button: STOP everything
-    m_driverController.a().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()));
+    //X button: STOP everything
+    m_driverController.x().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()));
 
 
     //------------Operator Controller------------//
