@@ -166,7 +166,7 @@ public final class Constants {
     public static final double kGearRatio=9.0;
     
     //Floor Lifter position radians
-    public static final double kUpRadians = 0.26;
+    public static final double kUpRadians = .78;
     public static final double kDownRadians = 0.0;
     
     //PID
