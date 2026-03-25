@@ -90,7 +90,7 @@ public class RobotContainer {
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
     autoChooser.setDefaultOption("Mobility Only Auto", m_TaxiOnlyAutoCommand);
-    autoChooser.addOption("Score + Mobility Auto", m_TaxiOnlyAutoCommand);
+    autoChooser.addOption("Score + Mobility Auto", m_TaxiShootAutoCommand);
     autoChooser.addOption("Two Piece Auto", m_TwoPieceAutoCommand);
     autoChooser.addOption("Left Aligned Sweep Auto", m_SweepFromLeftEdgeStart);
 
