@@ -13,6 +13,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+ import frc.robot.Constants.ShooterConstants;
 
 public class TwoPieceAutoCommand extends SequentialCommandGroup {
 
@@ -26,17 +27,12 @@ public class TwoPieceAutoCommand extends SequentialCommandGroup {
       
         addCommands(
                    
-          //Feed & shoot ~ 2.5 sec
-          new ParallelDeadlineGroup(
-            new WaitUntilCommand(() -> shooter.atSpeed()),
-            new HoldShootCommand(shooter)
-          ),
+          new InstantCommand(()->shooter.setTargetRPM(ShooterConstants.kTargetSpeed),shooter),
+          new WaitUntilCommand(shooter::atSpeed).withTimeout(1.5),
 
-          new ParallelCommandGroup(
-            new HoldShootCommand(shooter).withTimeout(1.5),
-            new RunIntakeRollerCommand(intakeRoller).withTimeout(1.5)
-          ),
+      
           new InstantCommand(shooter::stop, shooter),
+          
           //Drive & Intake ~ 3 sec
           new ParallelDeadlineGroup(
             drive.driveForwardMeters(3),
@@ -50,12 +46,10 @@ public class TwoPieceAutoCommand extends SequentialCommandGroup {
           new IntakeTravelCommand(intakePivot),
 
           //Feed & shoot ~ 2.5 seconds
-          new ParallelDeadlineGroup(
-            new WaitUntilCommand(() -> shooter.atSpeed()),
-            new HoldShootCommand(shooter)
-          ),
+         
           new ParallelCommandGroup(
-            new HoldShootCommand(shooter).withTimeout(1.5),
+            new InstantCommand(()->shooter.setTargetRPM(ShooterConstants.kTargetSpeed),shooter),
+          new WaitUntilCommand(shooter::atSpeed).withTimeout(1.5),
             new RunIntakeRollerCommand(intakeRoller).withTimeout(1.5)
           ),
 

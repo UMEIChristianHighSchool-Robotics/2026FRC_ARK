@@ -42,6 +42,8 @@ public final class Constants {
       public static final double kDistanceD=0;
       public static final double kDistanceTolerance=0.01;
       public static final double kDistanceSlewRateLimit=2.0; //controls acceleration to target
+       public static final double kAutoClamp = 0.6;
+
       
       //PID for autonomous turn to angle
       public static final double kTurnP=1.0;

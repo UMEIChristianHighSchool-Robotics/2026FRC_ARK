@@ -111,6 +111,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   //Add an at speed method for autos and consistency; command can wait
  public boolean atSpeed() {
+  //to avoid falsepositives
+  if(targetRPM<=0) return false;
   double tolerance = ShooterConstants.kSpeedTolerance;
 
   boolean rightAtSpeed =

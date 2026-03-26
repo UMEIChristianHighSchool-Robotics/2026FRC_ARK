@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -93,11 +94,14 @@ public class RobotContainer {
     autoChooser.addOption("Move Forward", m_TaxiOnlyAutoCommand);
    
     Shuffleboard.getTab("Auto").add("Auto Chooser", autoChooser); 
+     Shuffleboard.getTab("Auto").addDouble("Battery Voltage", RobotController::getBatteryVoltage); 
+    
     
   }
 
   private void configureBindings() {
     
+
     //------------Driver Controller------------//
     //D-Pad Speed Selector
     m_driverController.povUp().onTrue(new InstantCommand(() -> m_driveSubsystem.setSpeedMode(OperatorConstants.SpeedSelect.FAST)));

@@ -10,7 +10,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -69,7 +69,12 @@ public class DriveSubsystem extends SubsystemBase {
   private ShuffleboardTab driveTab= Shuffleboard.getTab("Drive");
   private ShuffleboardTab autoTab= Shuffleboard.getTab("Auto");
 
-
+  //Create entries for auto tab of Shuffleboard
+  private GenericEntry currentDistanceEntry;
+  private GenericEntry targetDistanceEntry;
+  private GenericEntry rawOutputEntry;
+  private GenericEntry clampedOutputEntry;
+  private GenericEntry finalOutputEntry;
 
   @SuppressWarnings("removal") //for the required API call that is scheduled for removal in 2027
 
@@ -133,6 +138,12 @@ public class DriveSubsystem extends SubsystemBase {
     driveTab.addDouble("Distance (m)", this::getDistanceMeters);
     driveTab.addString("Current Speed Mode", () -> currentSpeed.name());
     autoTab.addDouble("Distance (m)", this::getDistanceMeters);
+
+    currentDistanceEntry = autoTab.add("Current Distance", 0).getEntry();
+    targetDistanceEntry = autoTab.add("Target Distance", 0).getEntry();
+    rawOutputEntry = autoTab.add("Raw PID Output", 0).getEntry();
+    clampedOutputEntry = autoTab.add("Clamped Output", 0).getEntry();
+    finalOutputEntry = autoTab.add("Final Output", 0).getEntry();
 }
 
 public double getDistanceMeters() {
@@ -204,13 +215,21 @@ public Command arcadeDrive(DoubleSupplier xSpeed, DoubleSupplier zRotation) {
 
 //method to return drive forward command for autonomous sequence use
   public Command driveForwardMeters(double meters) {
-    SlewRateLimiter distanceLimiter = new SlewRateLimiter(DriveConstants.kDistanceSlewRateLimit); // optional
-
+    
     return run(() -> {
         double current = getDistanceMeters();
-        double output = distancePID.calculate(current, meters);
-        output = MathUtil.clamp(distanceLimiter.calculate(output), -0.6, 0.6);
-        m_drive.arcadeDrive(output * getForwardScale(), 0 );
+        double rawOutput = distancePID.calculate(current, meters);
+        double clampedOutput = MathUtil.clamp(rawOutput, -DriveConstants.kAutoClamp, DriveConstants.kAutoClamp);
+        double finalOutput = clampedOutput * getForwardScale();
+        
+        m_drive.arcadeDrive(finalOutput, 0,false );   
+
+      //Telemetry
+        currentDistanceEntry.setDouble(current);
+        targetDistanceEntry.setDouble(meters);
+        rawOutputEntry.setDouble(rawOutput);
+        clampedOutputEntry.setDouble(clampedOutput);
+        finalOutputEntry.setDouble(finalOutput);
     })
 
     .beforeStarting(() -> {
@@ -218,7 +237,7 @@ public Command arcadeDrive(DoubleSupplier xSpeed, DoubleSupplier zRotation) {
         distancePID.reset();
     })
     .until(distancePID::atSetpoint)
-    .finallyDo(interrupted -> stop());
+    .finallyDo(interrupted -> m_drive.stopMotor());
 }
 
  //method to return turn to angle command for autonomous sequence use

@@ -23,11 +23,12 @@ public class HoldShootCommand extends Command {
 
     @Override
   public void initialize() {
-    m_shooterSubsystem.setTargetRPM(ShooterConstants.kTargetSpeed);
+   
   }
 
     @Override
   public void execute() {
+     m_shooterSubsystem.setTargetRPM(ShooterConstants.kTargetSpeed);
   }
 
    @Override
