@@ -36,7 +36,7 @@ public class TwoPieceAutoCommand extends SequentialCommandGroup {
             new HoldShootCommand(shooter).withTimeout(1.5),
             new RunIntakeRollerCommand(intakeRoller).withTimeout(1.5)
           ),
-
+          new InstantCommand(shooter::stop, shooter),
           //Drive & Intake ~ 3 sec
           new ParallelDeadlineGroup(
             drive.driveForwardMeters(3),

@@ -22,21 +22,10 @@
   
         addCommands(
           
-          new ParallelDeadlineGroup(
-            new WaitUntilCommand(() -> shooter.atSpeed()),
-            new HoldShootCommand(shooter)
-          ),
-
-          //Feed & shoot
-          new ParallelCommandGroup(
-            new HoldShootCommand(shooter).withTimeout(1.5),
-            new RunIntakeRollerCommand(intakeRoller).withTimeout(1.5)
-          ),
-
+          new HoldShootCommand(shooter).withTimeout(1.5),
+          new InstantCommand(shooter::stop, shooter),
           //Drive forward
           drive.driveForwardMeters(2.5),
-
-          new InstantCommand(shooter::stop, shooter),
           new InstantCommand(intakeRoller::stopRoller, intakeRoller)
         );
     }
