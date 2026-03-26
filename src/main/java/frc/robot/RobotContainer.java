@@ -54,7 +54,7 @@ public class RobotContainer {
 
   //Commands
   public final TaxiOnlyAutoCommand m_TaxiOnlyAutoCommand = new TaxiOnlyAutoCommand(m_driveSubsystem);
-  public final TaxiShootAutoCommand m_TaxiShootAutoCommand = new TaxiShootAutoCommand(m_driveSubsystem, m_shooterSubsystem);
+  public final TaxiShootAutoCommand m_TaxiShootAutoCommand = new TaxiShootAutoCommand(m_driveSubsystem, m_intakeRollerSubsystem, m_shooterSubsystem);
   public final TwoPieceAutoCommand m_TwoPieceAutoCommand = new TwoPieceAutoCommand(m_driveSubsystem, m_intakePivotSubsystem, m_intakeRollerSubsystem, m_shooterSubsystem);
    public final SetDriveScaleCommand m_SetDriveScaleCommand = new SetDriveScaleCommand(m_driveSubsystem, 0, 0);
   public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_driverController);
