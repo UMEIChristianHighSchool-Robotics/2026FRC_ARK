@@ -5,10 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
@@ -26,14 +24,11 @@ public class TwoPieceAutoCommand extends SequentialCommandGroup {
         
       
         addCommands(
-                   
-          new InstantCommand(()->shooter.setTargetRPM(ShooterConstants.kTargetSpeed),shooter),
-          new WaitUntilCommand(shooter::atSpeed).withTimeout(1.5),
-
-      
-          new InstantCommand(shooter::stop, shooter),
           
-          //Drive & Intake ~ 3 sec
+          //shoots pre-load
+          shooter.autoShoot(ShooterConstants.kTargetSpeed),
+          
+          //Drive & Intake second piece
           new ParallelDeadlineGroup(
             drive.driveForwardMeters(3),
             new SequentialCommandGroup(
@@ -41,22 +36,15 @@ public class TwoPieceAutoCommand extends SequentialCommandGroup {
                 new RunIntakeRollerCommand(intakeRoller)
             )
           ),
-
-          //Retract Intake ~ 1 sec
+      
+          //Stop roller & Retract Intake
+          new InstantCommand(intakeRoller::stopRoller,intakeRoller),
           new IntakeTravelCommand(intakePivot),
 
-          //Feed & shoot ~ 2.5 seconds
-         
-          new ParallelCommandGroup(
-            new InstantCommand(()->shooter.setTargetRPM(ShooterConstants.kTargetSpeed),shooter),
-          new WaitUntilCommand(shooter::atSpeed).withTimeout(1.5),
-            new RunIntakeRollerCommand(intakeRoller).withTimeout(1.5)
-          ),
-
-          new InstantCommand(shooter::stop, shooter),
-          new InstantCommand(intakeRoller::stopRoller, intakeRoller),
-
-          //Reposition for TeleOp ~ 3 sec
+          //shoot second piece
+          shooter.autoShoot(ShooterConstants.kTargetSpeed),
+          
+          //Reposition for TeleOp
           drive.turnRelative(-45),
           drive.driveForwardMeters(-2)
 

@@ -16,8 +16,11 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.ShooterConstants;
+
 
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
@@ -129,6 +132,21 @@ public class ShooterSubsystem extends SubsystemBase {
   targetRPM = 0.0;
   rightMotor.stopMotor();
   leftMotor.stopMotor();
+}
+
+//A method to create a shooter command for auto
+public SequentialCommandGroup autoShoot(double targetRPM){
+return new SequentialCommandGroup(
+
+        // 1. Spin up shooter
+        runOnce(() -> setTargetRPM(targetRPM)),
+
+        // 2. Wait until at speed OR timeout (failsafe)
+        new WaitUntilCommand(this::atSpeed).withTimeout(2),
+
+        //Stop shooter (optional — remove if you want it to stay spinning)
+        runOnce(this::stop)
+    );
 }
 
   @Override

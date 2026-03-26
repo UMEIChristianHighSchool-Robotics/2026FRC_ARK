@@ -11,7 +11,7 @@ public class TaxiOnlyAutoCommand extends SequentialCommandGroup {
 
     public TaxiOnlyAutoCommand(DriveSubsystem drive) {
         addCommands(
-            drive.driveForwardMeters(3.5)
+            drive.driveForwardMeters(3)
         );
     }
 }
