@@ -196,10 +196,10 @@ public final class Constants {
     //Speed and deadband
     public static final double kDeadband = 0.05;
     public enum SpeedSelect{
-      CRAWL(0.20,0.35),
+      CRAWL(0.30,0.35),
       SLOW(0.40,0.45),
       DRIVE(0.70,0.60),
-      FAST(1.00,0.45);
+      FAST(0.80,0.45);
 
       public final double driveScale;
       public final double turnScale;
