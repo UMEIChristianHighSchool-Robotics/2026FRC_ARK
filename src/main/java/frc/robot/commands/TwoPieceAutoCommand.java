@@ -4,8 +4,11 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
@@ -22,31 +25,48 @@ public class TwoPieceAutoCommand extends SequentialCommandGroup {
         
       
         addCommands(
-            // Shoot stored balls
-            new HoldShootCommand(shooter).withTimeout(0.8),
+                   
+          //Feed & shoot ~ 2.5 sec
+          new ParallelDeadlineGroup(
+            new WaitUntilCommand(() -> shooter.atSpeed()),
+            new HoldShootCommand(shooter)
+          ),
 
-            //Deploy intake while driving
-            new ParallelDeadlineGroup(
-                drive.driveForwardMeters(3),
-                new IntakeDownCommand(intakePivot)
-            ),
-            
-            // Drive forward while running intake roller
-            new ParallelDeadlineGroup(
-                drive.driveForwardMeters(1.5),
-                new RunIntakeRollerCommand(intakeRoller)
-            ),
-
-            // Shoot
+          new ParallelCommandGroup(
             new HoldShootCommand(shooter).withTimeout(1.5),
-                  
+            new RunIntakeRollerCommand(intakeRoller).withTimeout(1.5)
+          ),
 
-            //Reposition for TeleOp
-            new ParallelDeadlineGroup(
-                drive.turnRelative(-90),    
-                new IntakeDownCommand(intakePivot)
+          //Drive & Intake ~ 3 sec
+          new ParallelDeadlineGroup(
+            drive.driveForwardMeters(3),
+            new SequentialCommandGroup(
+                new IntakeDownCommand(intakePivot),
+                new RunIntakeRollerCommand(intakeRoller)
             )
+          ),
+
+          //Retract Intake ~ 1 sec
+          new IntakeTravelCommand(intakePivot),
+
+          //Feed & shoot ~ 2.5 seconds
+          new ParallelDeadlineGroup(
+            new WaitUntilCommand(() -> shooter.atSpeed()),
+            new HoldShootCommand(shooter)
+          ),
+          new ParallelCommandGroup(
+            new HoldShootCommand(shooter).withTimeout(1.5),
+            new RunIntakeRollerCommand(intakeRoller).withTimeout(1.5)
+          ),
+
+          new InstantCommand(shooter::stop, shooter),
+          new InstantCommand(intakeRoller::stopRoller, intakeRoller),
+
+          //Reposition for TeleOp ~ 3 sec
+          drive.turnRelative(-45),
+          drive.driveForwardMeters(-2)
 
         );
     }
-}
+  }
+

@@ -58,8 +58,8 @@ public class DriveSubsystem extends SubsystemBase {
   private final DifferentialDrive m_drive = new DifferentialDrive(leftLeader,rightLeader);
   
      
-   //Set default Speed Mode to Slow
-  private OperatorConstants.SpeedSelect currentSpeed = OperatorConstants.SpeedSelect.SLOW;
+   //Set default Speed Mode to Drive
+  private OperatorConstants.SpeedSelect currentSpeed = OperatorConstants.SpeedSelect.DRIVE;
   
   // --- Forward and turn scaling (fields, accessible by commands) --- 
   private double forwardScale = currentSpeed.driveScale;
@@ -210,8 +210,9 @@ public Command arcadeDrive(DoubleSupplier xSpeed, DoubleSupplier zRotation) {
         double current = getDistanceMeters();
         double output = distancePID.calculate(current, meters);
         output = MathUtil.clamp(distanceLimiter.calculate(output), -0.6, 0.6);
-        m_drive.arcadeDrive(output, 0);
+        m_drive.arcadeDrive(output * getForwardScale(), 0 );
     })
+
     .beforeStarting(() -> {
         resetEncoders();
         distancePID.reset();
@@ -228,11 +229,9 @@ public Command arcadeDrive(DoubleSupplier xSpeed, DoubleSupplier zRotation) {
     return run(() -> {
         double current = leftEncoder.getPosition();
         double output = turnPID.calculate(current, wheelDistance);
-  
         output = MathUtil.clamp(output,-0.6,0.6);
-
-        //Left forward, right backward
-        setTankPower(output, -output);
+        double scaled = output * getTurnScale();
+        setTankPower(scaled, -scaled);
 
         double leftTarget = leftEncoder.getPosition() + wheelDistance;
         double rightTarget = rightEncoder.getPosition() - wheelDistance;
@@ -240,7 +239,7 @@ public Command arcadeDrive(DoubleSupplier xSpeed, DoubleSupplier zRotation) {
         double leftOutput = MathUtil.clamp(leftTarget - leftEncoder.getPosition(), -0.6, 0.6);
         double rightOutput = MathUtil.clamp(rightTarget - rightEncoder.getPosition(), -0.6, 0.6);
 
-        setTankPower(leftOutput, rightOutput);
+        setTankPower(leftOutput*getForwardScale(), rightOutput*getForwardScale());
     })
     .beforeStarting(this::resetEncoders)
     .until(() -> Math.abs(leftEncoder.getPosition() - wheelDistance) < 0.01

@@ -16,7 +16,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.TaxiOnlyAutoCommand;
 import frc.robot.commands.TaxiShootAutoCommand;
 import frc.robot.commands.TwoPieceAutoCommand;
-import frc.robot.commands.SweepFromLeftEdgeStart;
+
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.FloorDownCommand;
 import frc.robot.commands.FloorUpCommand;
@@ -56,8 +56,7 @@ public class RobotContainer {
   public final TaxiOnlyAutoCommand m_TaxiOnlyAutoCommand = new TaxiOnlyAutoCommand(m_driveSubsystem);
   public final TaxiShootAutoCommand m_TaxiShootAutoCommand = new TaxiShootAutoCommand(m_driveSubsystem, m_shooterSubsystem);
   public final TwoPieceAutoCommand m_TwoPieceAutoCommand = new TwoPieceAutoCommand(m_driveSubsystem, m_intakePivotSubsystem, m_intakeRollerSubsystem, m_shooterSubsystem);
-  public final SweepFromLeftEdgeStart m_SweepFromLeftEdgeStart = new SweepFromLeftEdgeStart(m_driveSubsystem, m_intakePivotSubsystem, m_intakeRollerSubsystem, m_shooterSubsystem);
-  public final SetDriveScaleCommand m_SetDriveScaleCommand = new SetDriveScaleCommand(m_driveSubsystem, 0, 0);
+   public final SetDriveScaleCommand m_SetDriveScaleCommand = new SetDriveScaleCommand(m_driveSubsystem, 0, 0);
   public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_driverController);
   public final RunIntakeRollerCommand m_runIntakeRollerCommand = new RunIntakeRollerCommand(m_intakeRollerSubsystem);
   public final ReverseIntakeRollerCommand m_reverseIntakeRollerCommand = new ReverseIntakeRollerCommand(m_intakeRollerSubsystem);
@@ -89,11 +88,10 @@ public class RobotContainer {
     // Set the options to show up in the Dashboard for selecting auto modes. If you
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
-    autoChooser.setDefaultOption("Mobility Only Auto", m_TaxiOnlyAutoCommand);
-    autoChooser.addOption("Score + Mobility Auto", m_TaxiShootAutoCommand);
-    autoChooser.addOption("Two Piece Auto", m_TwoPieceAutoCommand);
-    autoChooser.addOption("Left Aligned Sweep Auto", m_SweepFromLeftEdgeStart);
-
+    autoChooser.setDefaultOption("Two Piece Auto", m_TwoPieceAutoCommand);
+    autoChooser.addOption("Move + Shoot", m_TaxiShootAutoCommand);
+    autoChooser.addOption("Move Forward", m_TaxiOnlyAutoCommand);
+   
     Shuffleboard.getTab("Auto").add("Auto Chooser", autoChooser); 
     
   }
@@ -147,7 +145,6 @@ public class RobotContainer {
    }
 
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-   return autoChooser.getSelected();
+    return autoChooser.getSelected();
   }
 }

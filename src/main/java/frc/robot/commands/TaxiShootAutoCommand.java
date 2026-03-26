@@ -4,24 +4,40 @@
 
   package frc.robot.commands;
 
+  import edu.wpi.first.wpilibj2.command.InstantCommand;
+  import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+  import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
   import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+  import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
   import frc.robot.subsystems.DriveSubsystem;
+  import frc.robot.subsystems.IntakeRollerSubsystem;
   import frc.robot.subsystems.ShooterSubsystem;
 
   public class TaxiShootAutoCommand extends SequentialCommandGroup {
 
     public TaxiShootAutoCommand(
         DriveSubsystem drive,
+        IntakeRollerSubsystem intakeRoller,
         ShooterSubsystem shooter) {
   
         addCommands(
           
-          // Drive over ramp 
-          drive.driveForwardMeters(2),
+          new ParallelDeadlineGroup(
+            new WaitUntilCommand(() -> shooter.atSpeed()),
+            new HoldShootCommand(shooter)
+          ),
 
-          // Shoot stored balls
-          new HoldShootCommand(shooter).withTimeout(2.5)
+          //Feed & shoot
+          new ParallelCommandGroup(
+            new HoldShootCommand(shooter).withTimeout(1.5),
+            new RunIntakeRollerCommand(intakeRoller).withTimeout(1.5)
+          ),
 
+          //Drive forward
+          drive.driveForwardMeters(2.5),
+
+          new InstantCommand(shooter::stop, shooter),
+          new InstantCommand(intakeRoller::stopRoller, intakeRoller)
         );
     }
   }
