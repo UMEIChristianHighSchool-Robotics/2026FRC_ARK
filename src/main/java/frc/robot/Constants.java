@@ -41,8 +41,8 @@ public final class Constants {
       public static final double kDistanceI=0;
       public static final double kDistanceD=0;
       public static final double kDistanceTolerance=0.01;
-      public static final double kDistanceSlewRateLimit=2.0; //controls acceleration to target
-       public static final double kAutoClamp = 0.6;
+      public static final double kDistanceSlewRateLimit=3.0; //controls acceleration to target
+       public static final double kAutoClamp = 0.7;
 
       
       //PID for autonomous turn to angle
@@ -50,7 +50,7 @@ public final class Constants {
       public static final double kTurnI=0;
       public static final double kTurnD=0;
       public static final double kTurnTolerance=0.01; //meters
-      public static final double kTurnSlewRateLimit = 3.0;//max output change per second
+      public static final double kTurnSlewRateLimit = 4.0;//max output change per second
       
   }
   
@@ -114,8 +114,8 @@ public final class Constants {
     
       //Pivot soft limits (radians)
       /*Move the move intake to up/down positions manually, print encoder radians to dashboard, add/subtract 0.1 rad for safety */
-      public static final double kForwardSoftLimit = 4; // up
-      public static final double kReverseSoftLimit = 0; // down
+                             public static final double kForwardSoftLimit = 4; // up
+                            public static final double kReverseSoftLimit = 0; // down
       public static final boolean kForwardSoftLimitEnabled = true;//test and confirm limits first
       public static final boolean kReverseSoftLimitEnabled = true;//test and confirm limits first
 

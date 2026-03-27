@@ -92,7 +92,6 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Two Piece Auto", m_TwoPieceAutoCommand);
     autoChooser.addOption("Move + Shoot", m_TaxiShootAutoCommand);
     autoChooser.addOption("Move Forward", m_TaxiOnlyAutoCommand);
-   
     Shuffleboard.getTab("Auto").add("Auto Chooser", autoChooser); 
      Shuffleboard.getTab("Auto").addDouble("Battery Voltage", RobotController::getBatteryVoltage); 
     
