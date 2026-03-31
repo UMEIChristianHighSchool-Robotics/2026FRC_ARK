@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -40,7 +41,14 @@ public class FloorLifterSubsystem extends SubsystemBase {
 
   //Relative Encoder (built-in accessed via sparkmax)
   private RelativeEncoder floorLifterEncoder;
-  
+
+  //create feedforward object
+  private final ArmFeedforward feedforward =
+    new ArmFeedforward(
+        FloorLifterConstants.kSFeedForward,  
+        FloorLifterConstants.kGFeedForward,
+        FloorLifterConstants.kVFeedForward 
+    );  
   //Create PID Controller object 
   private final PIDController floorPID =
     new PIDController(
@@ -92,6 +100,8 @@ public class FloorLifterSubsystem extends SubsystemBase {
       currentState = FloorLiftState.DOWN;
     }
     
+
+
     //Telemetry
     FloorLiftTab.addNumber("Floor Lift kP", () -> FloorLifterConstants.kP);
     FloorLiftTab.addDouble("Angle Error", () -> currentState.radians - getAngleRadians());
@@ -134,6 +144,11 @@ public class FloorLifterSubsystem extends SubsystemBase {
     double pidOutput = floorPID.calculate(currentAngle, targetAngle);
     pidOutput = MathUtil.clamp(pidOutput, -12.0,12.0);
 
+    double ff = feedforward.calculate(currentAngle,targetAngle);
+    double outputVolts = pidOutput + ff;
+
+    outputVolts = MathUtil.clamp(outputVolts,-12.0,12.0);
+
     //apply soft limit
      if ((currentAngle >= FloorLifterConstants.kUpSoftLimit && pidOutput > 0) ||
       (currentAngle <= FloorLifterConstants.kDownSoftLimit && pidOutput < 0)) {
@@ -141,7 +156,7 @@ public class FloorLifterSubsystem extends SubsystemBase {
     }
 
     if (DriverStation.isEnabled()){
-      floorLifterMotor.setVoltage(pidOutput);
+      floorLifterMotor.setVoltage(outputVolts);
     }
     else {
       floorLifterMotor.stopMotor();

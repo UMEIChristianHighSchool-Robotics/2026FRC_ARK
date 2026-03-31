@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.FloorLifterSubsystem;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -16,6 +17,7 @@ import frc.robot.subsystems.DriveSubsystem;
  */
 public class Robot extends TimedRobot {
   public static final DriveSubsystem m_driveSubsystem = null;
+  public static final FloorLifterSubsystem m_floorLifterSubsystem = null;
 
   private Command m_autonomousCommand;
 
@@ -58,9 +60,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    //makes sure the intake deploy system is up to begin
-    m_robotContainer.m_intakePivotSubsystem.ensureUpOnEnable();
-    
+
+
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
@@ -80,9 +81,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    //makes sure the deploy system is UP position to begin
-    m_robotContainer.m_intakePivotSubsystem.ensureUpOnEnable();
-
   }
 
   /** This function is called periodically during operator control. */
