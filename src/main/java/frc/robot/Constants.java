@@ -52,48 +52,42 @@ public final class Constants {
       public static final double kTurnSlewRateLimit = 4.0;//max output change per second
       
   }
-  
-  public static final class FloorLifterConstants {
-    
-    //Floor Lifter mechanism CANIDs
-    public static final int kFloorLifterCANID = 14;
 
-    //Motor control
-    public static final boolean kFloorLifterInverted= false;
-    public static final int kCurrentLimit = 40;
+//----------------------------------INTAKE ROLLER-----------------------------------------//
+
+  public static final class IntakeRollerConstants {
+    
+    //CANIDs
+    public static final int kRollerRightCANID = 12;
+    public static final int kRollerLeftCANID = 13;
+
+    //Motor inversion
+    public static final boolean kRightInverted = true;
+   
+    //Speed control
+    public static final double kP = 0.002;//recommend 0.015-0.003 starting
+    public static final double kI = 0;//leave 0
+    public static final double kD = 0;// leave 0
+    public static final double kFF = 0.0022;//recommend 0.0021-0.0023 starting
+    public static final double kSpeedTolerance = 200; //RPM
+    public static final double kTargetSpeed = 3000; //RPM
+
+    //Other Motor control
+    public static final int kCurrentLimit = 60;
     public static final double kRampRate = 0.7;
     public static final double kVoltCompensation = 12.0;
-   
-    //-------------- States (floor lifter positions)-------------//
-    public static final double kGearRatio=9.0;
     
-    //Floor Lifter position radians
-    public static final double kUpRadians = -3.25;// extended out
-    public static final double kDownRadians = 0.0; // in starting position
-    //PID
-    public static final double kP = 1.0;
-    public static final double kI = 0.0;
-    public static final double kD = 0.2;
-    public static final double kLifterTolerance = 0.05;
-
-//Feedforward for gravity compensation
-      public static final double kSFeedForward = 0.30; //static friction, predicts power needed to accelerate 
-      public static final double kGFeedForward = 0.48; //hold arm up against gravity; too high: arm lifts when it shouldn't, jumpy motion; too low: arm droops, PID works hard, motor buzzes
-      public static final double kVFeedForward = 0.0; // power for moving at a certain speed; too low: motion feels weak, PID does most of the work; to high: arm moves too aggressively
-
-
-    public static final double kUpSoftLimit = 1.0;
-    public static final double kDownSoftLimit = -0.02;
-    public static final boolean kUpSoftLimitEnabled = true;//test and confirm limits first
-    public static final boolean kDownSoftLimitEnabled = true;//test and confirm limits first
-
+    //Timeout for Auto intake Command
+    public static final double kTimeout = 0.6; //intake feed timeout (seconds)
   }
   
+//------------------------------------------XBOX CONTROLLERS-----------------------------------------//
+
   public static final class OperatorConstants {
 
     //Joystick USB ports
     public static final int kDriverControllerPort = 0;
-        public static final int kOperatorControllerPort = 1; 
+    public static final int kOperatorControllerPort = 1; 
 
     //Joystick buttons
     public static final int kLeftYAxis = 1;

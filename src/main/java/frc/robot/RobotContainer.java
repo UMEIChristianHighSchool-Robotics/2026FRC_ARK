@@ -9,29 +9,25 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.TaxiOnlyAutoCommand;
-import frc.robot.Constants.OperatorConstants;
-
+import frc.robot.commands.RunIntakeRollerCommand;
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.FloorDownCommand;
-import frc.robot.commands.FloorUpCommand;
 import frc.robot.commands.SetDriveScaleCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.FloorLifterSubsystem;
-
+import frc.robot.subsystems.IntakeRollerSubsystem;
 
 public class RobotContainer {
 
   //Subsystems
   public final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-  public final FloorLifterSubsystem m_floorLifterSubsystem = new FloorLifterSubsystem();
+  public final IntakeRollerSubsystem m_intakeRoller = new IntakeRollerSubsystem();
   
   //Xbox Controllers
   public final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
-public final CommandXboxController m_operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
-
+  public final CommandXboxController m_operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
 
   //The autonomous chooser
   public final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -40,18 +36,17 @@ public final CommandXboxController m_operatorController = new CommandXboxControl
   public final TaxiOnlyAutoCommand m_TaxiOnlyAutoCommand = new TaxiOnlyAutoCommand(m_driveSubsystem);
   public final SetDriveScaleCommand m_SetDriveScaleCommand = new SetDriveScaleCommand(m_driveSubsystem, 0, 0);
   public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_driverController);
-  public final FloorUpCommand m_floorUpCommand = new FloorUpCommand(m_floorLifterSubsystem);
-  public final FloorDownCommand m_floorDownCommand = new FloorDownCommand(m_floorLifterSubsystem);  
-  
+  public final RunIntakeRollerCommand m_runIntakeRollerCommand = new RunIntakeRollerCommand(m_intakeRoller);
+ 
   public RobotContainer() {
     
     // Set default subsystem commands in the constructor
     m_driveSubsystem.setDefaultCommand(m_driveCommand);
-    
+    m_intakeRoller.setDefaultCommand(new RunCommand(m_intakeRoller::stopRoller,m_intakeRoller));
+
     // Configure the trigger bindings
     configureBindings();
  
-   
     // Set the options to show up in the Dashboard for selecting auto modes. If you
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
@@ -70,17 +65,18 @@ public final CommandXboxController m_operatorController = new CommandXboxControl
     m_driverController.povDown().onTrue(new InstantCommand(() -> m_driveSubsystem.setSpeedMode(OperatorConstants.SpeedSelect.SLOW)));
     m_driverController.povLeft().onTrue(new InstantCommand(() -> m_driveSubsystem.setSpeedMode(OperatorConstants.SpeedSelect.CRAWL)));
 
-// trigger
+    //Right Trigger: deploy and run intake roller
+    m_driverController.rightTrigger()
+      .whileTrue(
+         new RunIntakeRollerCommand(m_intakeRoller)
+        );
+
 
     //X button: STOP everything
     m_driverController.x().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()));
 
     //------------Operator Controller------------//
    
-    //Floor Lifter Positions
-    m_operatorController.a().onTrue(new FloorDownCommand(m_floorLifterSubsystem)); //A is "Down"
-    m_operatorController.y().onTrue(new FloorUpCommand(m_floorLifterSubsystem)); //Y is "Up"
-
    
   }
 
