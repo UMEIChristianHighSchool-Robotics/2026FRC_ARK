@@ -80,7 +80,52 @@ public final class Constants {
     //Timeout for Auto intake Command
     public static final double kTimeout = 0.6; //intake feed timeout (seconds)
   }
-  
+
+//----------------------------------INTAKE PIVOT-----------------------------------------//
+
+  public static final class IntakePivotConstants {
+    
+    //CANIDs
+    public static final int kIntakePivotCANID = 6;
+    
+    //Motor inversion
+    public static final boolean kIntakePivotInverted = true;
+   
+    //Position States
+    public static final double kInRadians = 2.5;
+    public static final double kTravelRadians = 1.7;
+    public static final double kOutRadians = 0.0;
+    public static final double kGearRatio = 2.0;
+
+    //Pivot soft limits (radians)
+    /*Move the move intake to up/down positions manually, print encoder radians to dashboard, add/subtract 0.1 rad for safety */
+    public static final double kInSoftLimit = 4;
+    public static final double kOutSoftLimit = 0; 
+    public static final boolean kInSoftLimitEnabled = true;//test and confirm limits first
+    public static final boolean kOutSoftLimitEnabled = true;//test and confirm limits first
+
+    //Position control
+    public static final double kP = 0.002;//recommend 0.015-0.003 starting
+    public static final double kI = 0;//leave 0
+    public static final double kD = 0;// leave 0
+    public static final double kFF = 0.0022;//recommend 0.0021-0.0023 starting
+    public static final double kIntakePivotTolerance = 200; //RPM
+    
+    //Other Motor control
+    public static final int kCurrentLimit = 60;
+    public static final double kRampRate = 0.7;
+    public static final double kVoltCompensation = 12.0;
+    
+    //Pivot soft limits (radians)
+    /*Move the move intake to up/down positions manually, print encoder radians to dashboard, add/subtract 0.1 rad for safety */
+    public static final double kForwardSoftLimit = 4; // up
+    public static final double kReverseSoftLimit = 0; // down
+    public static final boolean kForwardSoftLimitEnabled = true;//test and confirm limits first
+    public static final boolean kReverseSoftLimitEnabled = true;//test and confirm limits first
+
+}
+ 
+
 //------------------------------------------XBOX CONTROLLERS-----------------------------------------//
 
   public static final class OperatorConstants {
