@@ -134,6 +134,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_drive.setSafetyEnabled(true);
     
     // Telemetry
+    
     driveTab.addDouble("Left Encoder",()-> leftEncoder.getPosition());
     driveTab.addDouble("Right Encoder",()-> rightEncoder.getPosition());
     driveTab.addDouble("Distance (m)", this::getDistanceMeters);

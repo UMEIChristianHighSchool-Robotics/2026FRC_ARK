@@ -2,10 +2,15 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+//Adapted from CHAT GPT audit
+
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
+import java.util.Map;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -13,13 +18,16 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.networktables.GenericEntry;
 import frc.robot.Constants.IntakePivotConstants;
 
 public class IntakePivotSubsystem extends SubsystemBase {
 
-  //------ create Enum to setup states with positions-------/
+// --- Enums --- 
+
   public enum IntakePivotState{
     IN(IntakePivotConstants.kInRadians),
     TRAVEL (IntakePivotConstants.kTravelRadians),
@@ -32,16 +40,13 @@ public class IntakePivotSubsystem extends SubsystemBase {
     }
   }
 
-  //-------Declare and initialize the motor controllers-----------/
-  // Pivot motor: NEO V1 on Spark MAX controller
+// --- Hardware --- 
+// NEO V1 on Spark MAX controller
   private SparkMax intakePivotMotor = new SparkMax(IntakePivotConstants.kIntakePivotCANID, MotorType.kBrushless);
-  
-  //---------Declare and initialize the motor controller configurations
   private SparkMaxConfig intakePivotConfig = new SparkMaxConfig();
-
-  //Relative Encoder (built-in accessed via sparkmax)
   private RelativeEncoder intakePivotEncoder;
-  
+    
+// --- PID ---
   private final PIDController intakePivotPID=
     new PIDController(
       IntakePivotConstants.kP,
@@ -49,14 +54,26 @@ public class IntakePivotSubsystem extends SubsystemBase {
       IntakePivotConstants.kD
     );
 
-  private double getAngleRadians(){
-    return intakePivotEncoder.getPosition();
-  }
+// --- State tracking --- 
+private IntakePivotState currentState = IntakePivotState.IN;
+private boolean isManual = false; //field to allow for manual control on joystick
+private double manualOutput = 0.0; //field to allow for manual control on joystick
+private double holdAngleRadians = 0.0; //field to allow for the joystick position to hold on release
 
-  private IntakePivotState currentState = IntakePivotState.IN;
-  
-  private final ShuffleboardTab IntakeTab = Shuffleboard.getTab("Intake");
-  
+
+// --- Telemetry fields --- 
+private final ShuffleboardTab IntakeTab = Shuffleboard.getTab("Intake");
+private final GenericEntry kGEntry =
+    IntakeTab.add("kG Feedforward", IntakePivotConstants.kG)
+             .withWidget(BuiltInWidgets.kNumberSlider)
+             .withProperties(Map.of(
+                 "min", 0.0,
+                 "max", 12.0,
+                 "blockIncrement", 0.1
+             ))
+             .getEntry();
+
+// --- Contructor ---
   public IntakePivotSubsystem() {
 
     intakePivotEncoder = intakePivotMotor.getEncoder();
@@ -94,14 +111,58 @@ public class IntakePivotSubsystem extends SubsystemBase {
       currentState = IntakePivotState.OUT;
     }
   
+  holdAngleRadians = getAngleRadians();
 
   //Telemetry
-    IntakeTab.addNumber("Floor Lift kP", () -> IntakePivotConstants.kP);
-    IntakeTab.addDouble("Angle Error", () -> currentState.radians - getAngleRadians());
-    IntakeTab.addDouble("Current Angle (rad)", this::getAngleRadians);
-    IntakeTab.addDouble("Target Angle (rad)", () -> currentState.radians);
-    IntakeTab.addBoolean("At Setpoint", intakePivotPID::atSetpoint);
+ // --- Telemetry / Shuffleboard ---
+IntakeTab.addNumber("Current Angle (rad)", this::getAngleRadians);
+IntakeTab.addNumber("Current Angle (deg)", () -> Math.toDegrees(getAngleRadians()));
+IntakeTab.addNumber("Target Angle (rad)", () -> isManual ? getAngleRadians() : holdAngleRadians);
+IntakeTab.addNumber("Target Angle (deg)", () -> Math.toDegrees(isManual ? getAngleRadians() : holdAngleRadians));
+IntakeTab.addNumber("Error (rad)", () -> (isManual ? 0.0 : holdAngleRadians - getAngleRadians()));
+IntakeTab.addNumber("Error (deg)", () -> Math.toDegrees(isManual ? 0.0 : holdAngleRadians - getAngleRadians()));
+IntakeTab.addBoolean("Manual Mode", () -> isManual);
+
+// PID and Feedforward outputs
+IntakeTab.addNumber("PID Output (V)", () -> {
+    if (isManual) return 0.0;
+    return intakePivotPID.calculate(getAngleRadians(), holdAngleRadians);
+});
+IntakeTab.addNumber("Gravity FF (V)", () -> IntakePivotConstants.kG * Math.cos(getAngleRadians()));
+IntakeTab.addNumber("Total Voltage (V)", () -> {
+    double pidOutput = isManual ? manualOutput * IntakePivotConstants.kManualVoltageScale
+                                : intakePivotPID.calculate(getAngleRadians(), holdAngleRadians);
+    double gravityFF = IntakePivotConstants.kG * Math.cos(getAngleRadians());
+    return MathUtil.clamp(pidOutput + gravityFF, -12.0, 12.0);
+});
+
+// Soft limits
+IntakeTab.addBoolean("At Upper Soft Limit", () -> getAngleRadians() >= IntakePivotConstants.kInSoftLimit);
+IntakeTab.addBoolean("At Lower Soft Limit", () -> getAngleRadians() <= IntakePivotConstants.kOutSoftLimit);
+
+// Joystick and manual control
+IntakeTab.addNumber("Manual Output (joystick)", () -> isManual ? manualOutput : 0.0);
+        }
+
+public double getAngleRadians(){
+   return intakePivotEncoder.getPosition();
   }
+
+//methods for manual control
+public void setManualOutput(double output){
+  isManual = true;
+  manualOutput = output;
+}
+
+public void disableManual(){
+  holdAngleRadians = getAngleRadians();
+  intakePivotPID.reset();
+  isManual = false;
+}
+
+public boolean isManualMode(){
+  return isManual;
+}
 
   //method to check what state the floor lifter is in
   public boolean isNearState(IntakePivotState state) {
@@ -128,26 +189,42 @@ public class IntakePivotSubsystem extends SubsystemBase {
       return;
     }
     currentState = newState;
+    holdAngleRadians = newState.radians;
+    intakePivotPID.reset();
+    isManual=false;
   }
 
   @Override
   public void periodic() {
-    double currentAngle = getAngleRadians();
-    double targetAngle = currentState.radians;
-    double pidOutput = intakePivotPID.calculate(currentAngle, targetAngle);
-    pidOutput = MathUtil.clamp(pidOutput, -12.0,12.0);
 
-    //apply soft limit
-     if ((currentAngle >= IntakePivotConstants.kInSoftLimit && pidOutput > 0) ||
-      (currentAngle <= IntakePivotConstants.kOutSoftLimit && pidOutput < 0)) {
-        pidOutput = 0;
+    // --- Update kG from Shuffleboard slider ---
+    IntakePivotConstants.kG = kGEntry.getDouble(IntakePivotConstants.kG);
+
+    double currentAngle = getAngleRadians();
+    double output;
+   
+    if(isManual){
+      output = manualOutput*IntakePivotConstants.kManualVoltageScale;
+    }
+    else {
+      double pidOutput = intakePivotPID.calculate(currentAngle,holdAngleRadians);
+      double gravityFF = IntakePivotConstants.kG*Math.cos(currentAngle-IntakePivotConstants.kOffset);
+      output = pidOutput + gravityFF;
+    }
+
+    output = MathUtil.clamp(output, -12.0,12.0);
+
+    // --- Soft Limits ---
+     if ((currentAngle >= IntakePivotConstants.kInSoftLimit && output > 0) ||
+      (currentAngle <= IntakePivotConstants.kOutSoftLimit && output < 0)) {
+        output = 0;
     }
 
     if (DriverStation.isEnabled()){
-      intakePivotMotor.setVoltage(pidOutput);
-    }
-    else {
+      intakePivotMotor.setVoltage(output);
+    } else {
       intakePivotMotor.stopMotor();
     }
-  }
+
+     }
 }
