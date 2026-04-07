@@ -92,35 +92,63 @@ public final class Constants {
     public static final boolean kIntakePivotInverted = true;
    
     //Position States
-    public static final double kInRadians = 2.5;
-    public static final double kTravelRadians = 1.7;
-    public static final double kOutRadians = 0.0;
+    public static final double kInRadians = -.5;
+    public static final double kTravelRadians = -20;
+    public static final double kOutRadians = -32;
     
     //Pivot soft limits (radians)
     /*Move the move intake to up/down positions manually, print encoder radians to dashboard, add/subtract 0.1 rad for safety */
-    public static final double kInSoftLimit = 4;
-    public static final double kOutSoftLimit = 0; 
+    public static final double kInSoftLimit = -0.5;
+    public static final double kOutSoftLimit = -32; 
     public static final boolean kInSoftLimitEnabled = true;//test and confirm limits first
     public static final boolean kOutSoftLimitEnabled = true;//test and confirm limits first
 
     //Position control
-    public static final double kP = 0.002;//recommend 0.015-0.003 starting
+    public static final double kP = 1.5;//recommend 0.015-0.003 starting
     public static final double kI = 0;//leave 0
-    public static final double kD = 0;// leave 0
-    public static double kG = 3.1;
+    public static final double kD = 0.02;// leave 0
+    public static final double kG = 0;
     public static final double kIntakePivotTolerance = 0.05; // radians
-    public static final double kManualVoltageScale = 6.0; // scale to 4-6 V max for smooth control
-    public static final double kManualSlewRateLimiter = 3.0;
+    public static final double kManualVoltageScale = 10.0; // scale to 4-6 V max for smooth control
     public static final double kOffset = 0; // if 0rad is not arm horizontal 
 
     //Other
     public static final int kCurrentLimit = 60;
     public static final double kRampRate = 0.7;
     public static final double kVoltCompensation = 12.0;
-    public static final double kGearRatio = 10.0;
+    public static final double kGearRatio = 160.0;
 
 }
  
+
+//------------------------------------------SHOOTER CONSTANTS-----------------------------------------//
+
+
+  public static final class ShooterConstants {
+
+    //Shooter mechanism CANIDs
+    //neo v1 on spark max
+    public static final int kShooterCANID = 7;
+  
+    //Shooter mechanism motor controller configurations
+    public static final int kCurrentLimit = 60;
+    public static final double kRampRate = 0.0;
+    public static final double kVoltCompensation = 12.0;
+
+    public static final double kP = 0.002;//recommend 0.015-0.003 starting
+    public static final double kI = 0;//leave 0
+    public static final double kD = 0;// leave 0
+    public static final double kFF = 0.0022;//recommend 0.0021-0.0023 starting
+
+    public static final double kSpeedTolerance = 200; //RPM
+    public static final double kTargetSpeed = 5200; //RPM
+
+    //Shooter motor inversion
+    public static final boolean kShooterInverted = true;
+  
+    //Shoot Command
+    public static final double kTimeout = 1.6; //shooter feed timout (seconds)
+  }
 
 //------------------------------------------XBOX CONTROLLERS-----------------------------------------//
 

@@ -16,13 +16,17 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.TaxiOnlyAutoCommand;
 import frc.robot.commands.RunIntakeRollerCommand;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.HoldShootCommand;
 import frc.robot.commands.IntakeINCommand;
+import frc.robot.commands.IntakeManualAdjustCommand;
 import frc.robot.commands.IntakeOUTCommand;
 import frc.robot.commands.IntakeTRAVELCommand;
 import frc.robot.commands.SetDriveScaleCommand;
+import frc.robot.commands.ShooterIdleCommand;
 import frc.robot.commands.ReverseIntakeRollerCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeRollerSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakePivotSubsystem.IntakePivotState;
 
@@ -33,6 +37,7 @@ public class RobotContainer {
   public final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
   public final IntakeRollerSubsystem m_intakeRoller = new IntakeRollerSubsystem();
   public final IntakePivotSubsystem m_intakePivot = new IntakePivotSubsystem();
+  public final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
 
   //Xbox Controllers
   public final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -42,21 +47,34 @@ public class RobotContainer {
   public final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   //Commands
-  public final TaxiOnlyAutoCommand m_TaxiOnlyAutoCommand = new TaxiOnlyAutoCommand(m_driveSubsystem);
-  public final SetDriveScaleCommand m_SetDriveScaleCommand = new SetDriveScaleCommand(m_driveSubsystem, 0, 0);
   public final DriveCommand m_driveCommand = new DriveCommand(m_driveSubsystem,m_driverController);
-  public final RunIntakeRollerCommand m_runIntakeRollerCommand = new RunIntakeRollerCommand(m_intakeRoller);
-  public final ReverseIntakeRollerCommand m_reverseIntakeRollerCommand = new ReverseIntakeRollerCommand(m_intakeRoller);
+  public final HoldShootCommand m_holdShootCommand = new HoldShootCommand(m_shooterSubsystem);
   public final IntakeINCommand m_intakeINCommand = new IntakeINCommand(m_intakePivot);
   public final IntakeOUTCommand m_intakeOUTCommand = new IntakeOUTCommand(m_intakePivot);
   public final IntakeTRAVELCommand m_intakeTRAVELCommand = new IntakeTRAVELCommand(m_intakePivot);
-
+  public final ReverseIntakeRollerCommand m_reverseIntakeRollerCommand = new ReverseIntakeRollerCommand(m_intakeRoller);
+  public final RunIntakeRollerCommand m_runIntakeRollerCommand = new RunIntakeRollerCommand(m_intakeRoller);
+  public final SetDriveScaleCommand m_setDriveScaleCommand = new SetDriveScaleCommand(m_driveSubsystem, 0, 0);
+  public final ShooterIdleCommand m_shooterIdleCommand = new ShooterIdleCommand(m_shooterSubsystem);
+  public final TaxiOnlyAutoCommand m_taxiOnlyAutoCommand = new TaxiOnlyAutoCommand(m_driveSubsystem);
+  
   public RobotContainer() {
     
     // Set default subsystem commands in the constructor
     m_driveSubsystem.setDefaultCommand(m_driveCommand);
+    m_intakePivot.setDefaultCommand(
+      new IntakeManualAdjustCommand(
+          m_intakePivot,
+          () -> -m_operatorController.getLeftY()  // invert joystick
+      )
+    );
     m_intakeRoller.setDefaultCommand(new RunCommand(m_intakeRoller::stopRoller,m_intakeRoller));
-    m_intakePivot.setState(IntakePivotState.TRAVEL);
+    m_shooterSubsystem.setDefaultCommand(
+        new ShooterIdleCommand(m_shooterSubsystem)
+      );
+
+    // Set default intake state when the robot initializes
+    m_intakePivot.setState(IntakePivotState.IN);
 
     // Configure the trigger bindings
     configureBindings();
@@ -64,7 +82,7 @@ public class RobotContainer {
     // Set the options to show up in the Dashboard for selecting auto modes. If you
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
-    autoChooser.setDefaultOption("Move Forward", m_TaxiOnlyAutoCommand);
+    autoChooser.setDefaultOption("Move Forward", m_taxiOnlyAutoCommand);
 
     Shuffleboard.getTab("Auto").add("Auto Chooser", autoChooser); 
     
@@ -95,22 +113,30 @@ public class RobotContainer {
          new ReverseIntakeRollerCommand(m_intakeRoller)
         );
 
+    //Left trigger: shoot
+    m_driverController.leftTrigger()
+    .whileTrue(new HoldShootCommand(m_shooterSubsystem));
+  
 
     //X button: STOP everything
     m_driverController.x().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().cancelAll()));
 
     //------------Operator Controller------------//
     //Intake Positions
-    m_operatorController.povDown().onTrue(new IntakeOUTCommand(m_intakePivot)); //D-Pad down is "Down"
-    m_operatorController.povRight().onTrue(new IntakeTRAVELCommand(m_intakePivot)); //D-Pad right is "Travel"
-    m_operatorController.povUp().onTrue(new IntakeINCommand(m_intakePivot)); //D-Pad up is "Up"
+    m_operatorController.povDown()
+        .debounce(0.2)
+        .onTrue(new IntakeOUTCommand(m_intakePivot)); //D-Pad down is "Down"
+    m_operatorController.povRight()
+        .debounce(0.2)
+        .onTrue(new IntakeTRAVELCommand(m_intakePivot)); //D-Pad right is "Travel"
+    m_operatorController.povUp()
+        .debounce(0.2)
+        .onTrue(new IntakeINCommand(m_intakePivot)); //D-Pad up is "Up"
    
     //Intake Rollers
     m_operatorController.rightTrigger().whileTrue(new RunIntakeRollerCommand(m_intakeRoller)); //Right: Forward
     m_operatorController.leftTrigger().whileTrue(new ReverseIntakeRollerCommand(m_intakeRoller)); //Left: Reverse
-
-    
-    
+   
   }
 
   public Command getAutonomousCommand() {

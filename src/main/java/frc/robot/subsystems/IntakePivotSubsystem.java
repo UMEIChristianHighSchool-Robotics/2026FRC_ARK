@@ -8,9 +8,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
-import java.util.Map;
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -18,10 +15,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.networktables.GenericEntry;
 import frc.robot.Constants.IntakePivotConstants;
 
 public class IntakePivotSubsystem extends SubsystemBase {
@@ -60,18 +55,8 @@ private boolean isManual = false; //field to allow for manual control on joystic
 private double manualOutput = 0.0; //field to allow for manual control on joystick
 private double holdAngleRadians = 0.0; //field to allow for the joystick position to hold on release
 
-
 // --- Telemetry fields --- 
 private final ShuffleboardTab IntakeTab = Shuffleboard.getTab("Intake");
-private final GenericEntry kGEntry =
-    IntakeTab.add("kG Feedforward", IntakePivotConstants.kG)
-             .withWidget(BuiltInWidgets.kNumberSlider)
-             .withProperties(Map.of(
-                 "min", 0.0,
-                 "max", 12.0,
-                 "blockIncrement", 0.1
-             ))
-             .getEntry();
 
 // --- Contructor ---
   public IntakePivotSubsystem() {
@@ -116,11 +101,8 @@ private final GenericEntry kGEntry =
   //Telemetry
  // --- Telemetry / Shuffleboard ---
 IntakeTab.addNumber("Current Angle (rad)", this::getAngleRadians);
-IntakeTab.addNumber("Current Angle (deg)", () -> Math.toDegrees(getAngleRadians()));
 IntakeTab.addNumber("Target Angle (rad)", () -> isManual ? getAngleRadians() : holdAngleRadians);
-IntakeTab.addNumber("Target Angle (deg)", () -> Math.toDegrees(isManual ? getAngleRadians() : holdAngleRadians));
 IntakeTab.addNumber("Error (rad)", () -> (isManual ? 0.0 : holdAngleRadians - getAngleRadians()));
-IntakeTab.addNumber("Error (deg)", () -> Math.toDegrees(isManual ? 0.0 : holdAngleRadians - getAngleRadians()));
 IntakeTab.addBoolean("Manual Mode", () -> isManual);
 
 // PID and Feedforward outputs
@@ -128,11 +110,12 @@ IntakeTab.addNumber("PID Output (V)", () -> {
     if (isManual) return 0.0;
     return intakePivotPID.calculate(getAngleRadians(), holdAngleRadians);
 });
-IntakeTab.addNumber("Gravity FF (V)", () -> IntakePivotConstants.kG * Math.cos(getAngleRadians()));
+IntakeTab.addNumber("Gravity FF (V)", 
+    () -> IntakePivotConstants.kG * Math.sin(getAngleRadians() - IntakePivotConstants.kOffset));
 IntakeTab.addNumber("Total Voltage (V)", () -> {
     double pidOutput = isManual ? manualOutput * IntakePivotConstants.kManualVoltageScale
                                 : intakePivotPID.calculate(getAngleRadians(), holdAngleRadians);
-    double gravityFF = IntakePivotConstants.kG * Math.cos(getAngleRadians());
+        double gravityFF = IntakePivotConstants.kG * Math.sin(holdAngleRadians);
     return MathUtil.clamp(pidOutput + gravityFF, -12.0, 12.0);
 });
 
@@ -140,9 +123,7 @@ IntakeTab.addNumber("Total Voltage (V)", () -> {
 IntakeTab.addBoolean("At Upper Soft Limit", () -> getAngleRadians() >= IntakePivotConstants.kInSoftLimit);
 IntakeTab.addBoolean("At Lower Soft Limit", () -> getAngleRadians() <= IntakePivotConstants.kOutSoftLimit);
 
-// Joystick and manual control
-IntakeTab.addNumber("Manual Output (joystick)", () -> isManual ? manualOutput : 0.0);
-        }
+}
 
 public double getAngleRadians(){
    return intakePivotEncoder.getPosition();
@@ -197,9 +178,6 @@ public boolean isManualMode(){
   @Override
   public void periodic() {
 
-    // --- Update kG from Shuffleboard slider ---
-    IntakePivotConstants.kG = kGEntry.getDouble(IntakePivotConstants.kG);
-
     double currentAngle = getAngleRadians();
     double output;
    
@@ -208,7 +186,7 @@ public boolean isManualMode(){
     }
     else {
       double pidOutput = intakePivotPID.calculate(currentAngle,holdAngleRadians);
-      double gravityFF = IntakePivotConstants.kG*Math.cos(currentAngle-IntakePivotConstants.kOffset);
+      double gravityFF = IntakePivotConstants.kG*Math.sin(currentAngle-IntakePivotConstants.kOffset);
       output = pidOutput + gravityFF;
     }
 
@@ -226,5 +204,5 @@ public boolean isManualMode(){
       intakePivotMotor.stopMotor();
     }
 
-     }
+  }
 }
