@@ -20,9 +20,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants.IntakePivotConstants;
 
 public class IntakePivotSubsystem extends SubsystemBase {
-
 // --- Enums --- 
-
   public enum IntakePivotState{
     IN(IntakePivotConstants.kInRadians),
     TRAVEL (IntakePivotConstants.kTravelRadians),

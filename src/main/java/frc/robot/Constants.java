@@ -93,30 +93,30 @@ public final class Constants {
    
     //Position States
     public static final double kInRadians = -.5;
-    public static final double kTravelRadians = -20;
-    public static final double kOutRadians = -32;
+    public static final double kTravelRadians = -18;
+    public static final double kOutRadians = -28.5;
     
     //Pivot soft limits (radians)
     /*Move the move intake to up/down positions manually, print encoder radians to dashboard, add/subtract 0.1 rad for safety */
-    public static final double kInSoftLimit = -0.5;
-    public static final double kOutSoftLimit = -32; 
+    public static final double kInSoftLimit = 100;
+    public static final double kOutSoftLimit = -29; 
     public static final boolean kInSoftLimitEnabled = true;//test and confirm limits first
     public static final boolean kOutSoftLimitEnabled = true;//test and confirm limits first
 
     //Position control
-    public static final double kP = 1.5;//recommend 0.015-0.003 starting
+    public static final double kP = .007;//recommend 0.015-0.003 starting
     public static final double kI = 0;//leave 0
-    public static final double kD = 0.02;// leave 0
+    public static final double kD = 0;// leave 0
     public static final double kG = 0;
     public static final double kIntakePivotTolerance = 0.05; // radians
-    public static final double kManualVoltageScale = 10.0; // scale to 4-6 V max for smooth control
+    public static final double kManualVoltageScale = 8.0; // scale to 4-6 V max for smooth control
     public static final double kOffset = 0; // if 0rad is not arm horizontal 
 
     //Other
     public static final int kCurrentLimit = 60;
     public static final double kRampRate = 0.7;
     public static final double kVoltCompensation = 12.0;
-    public static final double kGearRatio = 160.0;
+    public static final double kGearRatio = 18.0;
 
 }
  
@@ -132,16 +132,16 @@ public final class Constants {
   
     //Shooter mechanism motor controller configurations
     public static final int kCurrentLimit = 60;
-    public static final double kRampRate = 0.0;
+    public static final double kRampRate = 0.5;
     public static final double kVoltCompensation = 12.0;
 
-    public static final double kP = 0.002;//recommend 0.015-0.003 starting
+    public static final double kP = 0.009;//recommend 0.015-0.003 starting
     public static final double kI = 0;//leave 0
     public static final double kD = 0;// leave 0
     public static final double kFF = 0.0022;//recommend 0.0021-0.0023 starting
 
     public static final double kSpeedTolerance = 200; //RPM
-    public static final double kTargetSpeed = 5200; //RPM
+    public static final double kTargetSpeed = 6600; //RPM
 
     //Shooter motor inversion
     public static final boolean kShooterInverted = true;

@@ -30,7 +30,6 @@ public class DriveCommand extends Command {
         m_drive = drive;
         m_controller = controller;
         
-
         // objects that set the options for drive mode
         driveChooser.setDefaultOption("Arcade Drive", "Arcade Drive");
         driveChooser.addOption("Tank Drive", "Tank Drive");

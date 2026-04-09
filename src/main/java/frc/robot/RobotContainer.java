@@ -101,10 +101,10 @@ public class RobotContainer {
     m_driverController.rightTrigger()
       .whileTrue(
         new ParallelCommandGroup(
-          new IntakeOUTCommand(m_intakePivot),  
+          //new IntakeOUTCommand(m_intakePivot),  
           new RunIntakeRollerCommand(m_intakeRoller)
-        ))
-      .onFalse(new IntakeTRAVELCommand(m_intakePivot));
+        ));
+      //.onFalse(new IntakeTRAVELCommand(m_intakePivot));
 
 
     //Right Bumper: Reverse intake roller
